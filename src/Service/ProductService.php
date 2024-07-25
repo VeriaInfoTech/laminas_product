@@ -39,8 +39,11 @@ class ProductService implements ServiceInterface
         $this->config = $config;
     }
 
-    public function getItemList(object|array $requestBody)
+    public function getItemList(object|array $params): array
     {
+        $params['type'] = 'product';
+        return $this->itemService->getItemList($params);
+
     }
 
 }

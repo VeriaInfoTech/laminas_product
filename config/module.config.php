@@ -5,7 +5,7 @@ use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\Router\Http\Literal;
 use User\Middleware\AuthenticationMiddleware;
 use User\Middleware\AuthorizationMiddleware;
-use User\Middleware\RawDataValidationMiddleware;
+use User\Middleware\RequestPreparationMiddleware;
 use User\Middleware\SecurityMiddleware;
 
 return [
@@ -50,6 +50,7 @@ return [
                                         'permission' => 'public-product-item-list',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
                                             SecurityMiddleware::class,
                                             Handler\Public\Item\ItemListHandler::class
                                         ),
