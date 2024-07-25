@@ -39,4 +39,8 @@ class ProductService implements ServiceInterface
         $this->config = $config;
     }
 
+    public function getItemList(object|array $requestBody)
+    {
+    }
+
 }
