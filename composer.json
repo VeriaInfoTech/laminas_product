@@ -25,7 +25,6 @@
   },
   "autoload": {
     "psr-4": {
-      "User\\": "vendor/pi/notification/src/"
     }
   },
   "suggest": {
