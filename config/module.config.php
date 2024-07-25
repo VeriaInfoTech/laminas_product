@@ -16,8 +16,15 @@ return [
         'factories' => [
             //start services factories
             Service\ProductService::class => Factory\Service\ProductServiceFactory::class,
+            Service\BrandService::class => Factory\Service\BrandServiceFactory::class,
+            Service\CategoryService::class => Factory\Service\CategoryServiceFactory::class,
             //start handlers factories
+            //item handlers
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
+            //category handlers
+            Handler\Public\Category\CategoryListHandler::class => Factory\Handler\Public\Category\CategoryListHandlerFactory::class,
+            //brand handlers
+            Handler\Public\Brand\BrandListHandler::class => Factory\Handler\Public\Brand\BrandListHandlerFactory::class,
         ],
     ],
 
@@ -53,6 +60,62 @@ return [
                                             RequestPreparationMiddleware::class,
                                             SecurityMiddleware::class,
                                             Handler\Public\Item\ItemListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'category' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/category',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'public',
+                                        'package' => 'category',
+                                        'handler' => 'list',
+                                        'permission' => 'public-product-category-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Category\CategoryListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'brand' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/brand',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'public',
+                                        'package' => 'brand',
+                                        'handler' => 'list',
+                                        'permission' => 'public-product-brand-list',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Brand\BrandListHandler::class
                                         ),
                                     ],
                                 ],
