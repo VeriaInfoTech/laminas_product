@@ -1,7 +1,7 @@
 <?php
 
 namespace Product\Handler\Public\Category;
- 
+
 use Laminas\Diactoros\Response\JsonResponse;
 use Product\Service\CategoryService;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -25,7 +25,7 @@ class CategoryListHandler implements RequestHandlerInterface
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface   $streamFactory,
-        CategoryService              $categoryService
+        CategoryService          $categoryService
     )
     {
         $this->responseFactory = $responseFactory;
@@ -38,7 +38,19 @@ class CategoryListHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $requestBody['status'] = 1;
-        $result = $this->categoryService->getCategoryList($requestBody);
+        $requestBody['key'] = 'category';
+        $result = [
+            'result' => true,
+            'data' => [
+                "list" => $this->categoryService->getCategoryList($requestBody),
+            ],
+            'paginator' => [
+                'count' => null,
+                'limit' => null,
+                'page'  => null,
+            ],
+            'error' => [],
+        ];
 
         return new JsonResponse($result);
     }

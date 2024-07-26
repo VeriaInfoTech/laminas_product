@@ -2,7 +2,7 @@
 
 namespace Product\Factory\Service;
 
-use Content\Service\ItemService;
+use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,7 +29,7 @@ class BrandServiceFactory implements FactoryInterface
         return new BrandService(
             $container->get(AccountService::class),
             $container->get(UtilityService::class),
-            $container->get(ItemService::class),
+            $container->get(MetaService::class),
             ///TODO: kerloper: set config array in global if need it
             []
         );

@@ -38,6 +38,7 @@ class BrandListHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $requestBody['status'] = 1;
+        $requestBody['key'] = 'category';
         $result = $this->brandService->getBrandList($requestBody);
 
         return new JsonResponse($result);

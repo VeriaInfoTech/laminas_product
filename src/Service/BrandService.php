@@ -2,7 +2,7 @@
 
 namespace Product\Service;
 
-use Content\Service\ItemService;
+use Content\Service\MetaService;
 use stdClass;
 use User\Service\AccountService;
 use User\Service\UtilityService;
@@ -23,25 +23,25 @@ class BrandService implements ServiceInterface
     /* @var array */
     protected array $config;
 
-    /** @var ItemService */
-    protected ItemService $itemService;
+    /** @var MetaService */
+    protected MetaService $metaService;
 
     public function __construct(
         AccountService      $accountService,
         UtilityService      $utilityService,
-                            ItemService $itemService,
+                            MetaService $metaService,
                             $config
     )
     {
         $this->accountService = $accountService;
         $this->utilityService = $utilityService;
-        $this->itemService = $itemService;
+        $this->metaService = $metaService;
         $this->config = $config;
     }
 
     public function getBrandList(object|array $params = []): array
     {
-        return $params;
+        return  $this->metaService->getMetaValueList($params);
     }
 
 }
