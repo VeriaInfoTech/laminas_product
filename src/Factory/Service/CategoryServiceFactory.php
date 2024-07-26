@@ -2,13 +2,12 @@
 
 namespace Product\Factory\Service;
 
-use Content\Service\ItemService;
+use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Product\Service\CategoryService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Product\Service\ProductService;
 use User\Service\AccountService;
 use User\Service\UtilityService;
 
@@ -30,7 +29,7 @@ class CategoryServiceFactory implements FactoryInterface
         return new CategoryService(
             $container->get(AccountService::class),
             $container->get(UtilityService::class),
-            $container->get(ItemService::class),
+            $container->get(MetaService::class),
             ///TODO: kerloper: set config array in global if need it
             []
         );
