@@ -11,7 +11,7 @@ use User\Middleware\SecurityMiddleware;
 return [
     'service_manager' => [
         'aliases' => [
-
+            Repository\ProductRepositoryInterface::class => Repository\ProductRepository::class,
             ],
         'factories' => [
             //start services factories
