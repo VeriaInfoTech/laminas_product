@@ -135,7 +135,7 @@ return [
                 ],
             ],
             // admin section
-            'admin_content' => [
+            'admin_product' => [
                 'type' => Literal::class,
                 'options' => [
                     'route' => '/admin/product',
