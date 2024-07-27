@@ -108,6 +108,7 @@ class ProductService implements ServiceInterface
 
         $brandList = $data['brand_list']??[];
         $categoryList = $data['category_list']??[];
+        $isNew = (bool)rand(0,1);
         $product = [
             'id' => $item['id']??null,
             'slug' => $item['slug']??null,
@@ -115,8 +116,8 @@ class ProductService implements ServiceInterface
             'trending' => (bool)rand(0,1),
             'topRated' => (bool)rand(0,1),
             'bestSeller' => (bool)rand(0,1),
-            'new' => (bool)rand(0,1),
-            'special_sale' => (bool)rand(0,1),
+            'new' => !$isNew,
+            'special_sale' => $isNew,
             'banner' => true,
             'banner_img' =>  $item['image']?$item['image']['src']??null:null,
             'sale_of_per' => 10, // Default sale percentage
