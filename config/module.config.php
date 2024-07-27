@@ -21,6 +21,7 @@ return [
             //start handlers factories
             //item handlers
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
+            Handler\Public\Item\ItemGetHandler::class => Factory\Handler\Public\Item\ItemGetHandlerFactory::class,
             //category handlers
             Handler\Public\Category\CategoryListHandler::class => Factory\Handler\Public\Category\CategoryListHandlerFactory::class,
             //brand handlers
@@ -45,6 +46,25 @@ return [
                             'defaults' => [],
                         ],
                         'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'get',
+                                        'permission' => 'public-product-item-get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Item\ItemGetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
                             'list' => [
                                 'type' => Literal::class,
                                 'options' => [

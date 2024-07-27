@@ -103,10 +103,14 @@ class ProductService implements ServiceInterface
     private function canonizeProductType1(mixed $data): array
     {
         $item = $data['item']??[];
+        if(empty($item))
+            return [];
+
         $brandList = $data['brand_list']??[];
         $categoryList = $data['category_list']??[];
         $product = [
             'id' => $item['id']??null,
+            'slug' => $item['slug']??null,
             'img' => $item['image']?$item['image']['src']??null:null,
             'trending' => (bool)rand(0,1),
             'topRated' => (bool)rand(0,1),
@@ -177,6 +181,21 @@ class ProductService implements ServiceInterface
 
 
         return $product;
+    }
+
+    public function getItem(object|array $requestBody): array
+    {
+        $requestBody['type'] = $requestBody['type']??'';
+
+        $categoryList    = $this->getCategoryObjectList();
+        $brandList       = $this->getBrandObjectList();
+
+        return $this->canonizeProductType1([
+            "item"=> $this->itemService->getItem($requestBody[$requestBody['type']],$requestBody['type']),
+            "category_list"=>$categoryList,
+            "brand_list"=>$brandList
+        ]);
+
     }
 
 }
