@@ -123,7 +123,7 @@ class ProductService implements ServiceInterface
             'category' => '',
             'brand' => '',
             'title' =>  $item['title']??'',
-            'price' => 199.99,
+            'price' => 120000,
             'old_price' => 249.99,
             'rating' =>rand(0,5),
             'quantity' => 50,
@@ -151,22 +151,29 @@ class ProductService implements ServiceInterface
         ];
 
         $product['extra']['category']  =  $this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'category']);
-        $productBrandList =$this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'brand']);
-        $product['extra']['brand']  =  (sizeof($productBrandList)>0)?$productBrandList[0]:[];
-
-        if($product['extra']['brand']){
-            $product['brand'] = isset($product['extra']['brand']['meta_value'])?$brandList[$product['extra']['brand']['meta_value']]['title']??'':'';
-        }
         if($product['extra']['category']){
             $product['category'] = implode(
                 ",",
                 array_map(function ($item) {
                     return $item["meta_information"]["title"];
                 },
-                $product['extra']['category']
+                    $product['extra']['category']
                 )
             );
         }
+
+        $productBrandList =$this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'brand']);
+        $product['extra']['brand']  =  (sizeof($productBrandList)>0)?$productBrandList[0]:[];
+        if($product['extra']['brand']){
+            $product['brand'] = isset($product['extra']['brand']['meta_value'])?$brandList[$product['extra']['brand']['meta_value']]['title']??'':'';
+        }
+
+        $productPriceList =$this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'price']);
+        $product['extra']['price']  =  (sizeof($productPriceList)>0)?$productPriceList[0]:[];
+        if($product['extra']['price']){
+            $product['price'] =  (int)$product['extra']['price']['meta_value']??150000 ;
+        }
+
 
 
         return $product;
