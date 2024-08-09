@@ -3,6 +3,8 @@
 namespace Product\Handler\Public\Item;
 
 use Content\Service\ItemService;
+use Product\Service\BrandService;
+use Product\Service\CategoryService;
 use Product\Service\ProductService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -26,17 +28,27 @@ class ItemHomeHandler implements RequestHandlerInterface
     protected ItemService $itemService;
 
 
+    /** @var CategoryService */
+    protected CategoryService $categoryService;
+
+    /** @var BrandService */
+    protected BrandService $brandService;
+
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface   $streamFactory,
         ItemService              $itemService,
-        ProductService           $productService
+        ProductService           $productService,
+        CategoryService          $categoryService,
+        BrandService             $brandService
     )
     {
         $this->responseFactory = $responseFactory;
         $this->streamFactory = $streamFactory;
         $this->itemService = $itemService;
         $this->productService = $productService;
+        $this->categoryService = $categoryService;
+        $this->brandService = $brandService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -103,6 +115,8 @@ class ItemHomeHandler implements RequestHandlerInterface
                             "list" => $this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list'],
 
                         ],
+                        'category_list'=>$this->categoryService->getCategoryList(['key'=>'category']),
+                        'brand_list'=>$this->brandService->getBrandList(['key'=>'brand'])['data']['list']
                     ];
                     break;
             }
