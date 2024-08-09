@@ -20,6 +20,7 @@ return [
             Service\CategoryService::class => Factory\Service\CategoryServiceFactory::class,
             //start handlers factories
             //item handlers
+            Handler\Public\Item\ItemHomeHandler::class => Factory\Handler\Public\Item\ItemHomeHandlerFactory::class,
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
             Handler\Public\Item\ItemGetHandler::class => Factory\Handler\Public\Item\ItemGetHandlerFactory::class,
             //category handlers
@@ -46,6 +47,25 @@ return [
                             'defaults' => [],
                         ],
                         'child_routes' => [
+                            'home' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/home',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'public',
+                                        'package' => 'item',
+                                        'handler' => 'home',
+                                        'permission' => 'public-product-item-home',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            Handler\Public\Item\ItemHomeHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
                             'get' => [
                                 'type' => Literal::class,
                                 'options' => [

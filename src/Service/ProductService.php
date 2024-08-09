@@ -108,16 +108,16 @@ class ProductService implements ServiceInterface
 
         $brandList = $data['brand_list']??[];
         $categoryList = $data['category_list']??[];
-        $isNew = (bool)rand(0,1);
+        $isSpecial = $this->hasMetaKey($data['item'], 'product-special');
         $product = [
             'id' => $item['id']??null,
             'slug' => $item['slug']??null,
             'img' => $item['image']?$item['image']['src']??null:null,
-            'trending' => (bool)rand(0,1),
+            'trending' => $this->hasMetaKey($data['item'], 'product-trend'),
             'topRated' => (bool)rand(0,1),
             'bestSeller' => (bool)rand(0,1),
-            'new' => !$isNew,
-            'special_sale' => $isNew,
+            'new' => !$isSpecial,
+            'special_sale' => $isSpecial,
             'banner' => true,
             'banner_img' =>  $item['image']?$item['image']['src']??null:null,
             'sale_of_per' => 10, // Default sale percentage
@@ -197,6 +197,17 @@ class ProductService implements ServiceInterface
             "brand_list"=>$brandList
         ]);
 
+    }
+
+    private function hasMetaKey($data, $key) {
+        if (isset($data['meta']) && is_array($data['meta'])) {
+            foreach ($data['meta'] as $meta) {
+                if (isset($meta['meta_key']) && $meta['meta_key'] === $key) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
