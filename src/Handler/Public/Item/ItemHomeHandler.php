@@ -112,7 +112,7 @@ class ItemHomeHandler implements RequestHandlerInterface
                             "title" => "وبلاگ",
                             "more_link" => "/blog/",
                             "more_title" => "مشاهده بیشتر",
-                            "list" => $this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list'],
+                            "list" => $this->canonizeBlogList($this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list']),
 
                         ],
                         'category_list'=>$this->categoryService->getCategoryList(['key'=>'category']),
@@ -129,5 +129,17 @@ class ItemHomeHandler implements RequestHandlerInterface
         ];
 
         return new JsonResponse($result);
+    }
+
+    private function canonizeBlogList(mixed $list)
+    {
+        if($list){
+            foreach ($list as $key=>$item) {
+                $list[$key]['author'] = 'مدیر محتوا';
+                $list[$key]['description'] = $item['abstract'];
+                $list[$key]['abstract'] = "لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند";
+            }
+        }
+        return $list;
     }
 }
