@@ -31,33 +31,33 @@ class ProductService implements ServiceInterface
     protected ItemService $itemService;
 
     public function __construct(
-        AccountService      $accountService,
-        UtilityService      $utilityService,
-                            MetaService     $metaService,
-                            ItemService     $itemService,
-                            $config
+        AccountService $accountService,
+        UtilityService $utilityService,
+        MetaService    $metaService,
+        ItemService    $itemService,
+                       $config
     )
     {
-        $this->accountService   = $accountService;
-        $this->utilityService   = $utilityService;
-        $this->metaService      = $metaService;
-        $this->itemService      = $itemService;
-        $this->config           = $config;
+        $this->accountService = $accountService;
+        $this->utilityService = $utilityService;
+        $this->metaService = $metaService;
+        $this->itemService = $itemService;
+        $this->config = $config;
     }
 
     public function getItemList(object|array $params): array
     {
-        $params['type']  = 'product';
-        $data            = $this->itemService->getItemList($params);
-        $list            = $data['data']['list'];
-        $listType1       = [];
-        $categoryList    = $this->getCategoryObjectList();
-        $brandList       = $this->getBrandObjectList();
+        $params['type'] = 'product';
+        $data = $this->itemService->getItemList($params);
+        $list = $data['data']['list'];
+        $listType1 = [];
+        $categoryList = $this->getCategoryObjectList();
+        $brandList = $this->getBrandObjectList();
         foreach ($list as $item) {
             $listType1[] = $this->canonizeProductType1([
-                "item"=>$item,
-                "category_list"=>$categoryList,
-                "brand_list"=>$brandList
+                "item" => $item,
+                "category_list" => $categoryList,
+                "brand_list" => $brandList
             ]);
         }
         $data['data']['list'] = $listType1;
@@ -68,7 +68,7 @@ class ProductService implements ServiceInterface
     ///TODO: move this business to add entity
     private function getCategoryObjectList(): array
     {
-        $list =  $this->metaService->getMetaValueList(['key'=>'category'])['data']['list'];
+        $list = $this->metaService->getMetaValueList(['key' => 'category'])['data']['list'];
         $objectList = [];
         foreach ($list as $item) {
             $objectList[$item['slug']] = $item;
@@ -79,7 +79,7 @@ class ProductService implements ServiceInterface
     ///TODO: move this business to add entity
     private function getBrandObjectList(): array
     {
-        $list = $this->metaService->getMetaValueList(['key'=>'brand'])['data']['list'];
+        $list = $this->metaService->getMetaValueList(['key' => 'brand'])['data']['list'];
         $objectList = [];
         foreach ($list as $item) {
             $objectList[$item['slug']] = $item;
@@ -102,41 +102,41 @@ class ProductService implements ServiceInterface
     ///TODO : move to utility class
     private function canonizeProductType1(mixed $data): array
     {
-        $item = $data['item']??[];
-        if(empty($item))
+        $item = $data['item'] ?? [];
+        if (empty($item))
             return [];
 
-        $brandList = $data['brand_list']??[];
-        $categoryList = $data['category_list']??[];
+        $brandList = $data['brand_list'] ?? [];
+        $categoryList = $data['category_list'] ?? [];
         $isSpecial = $this->hasMetaKey($data['item'], 'product-special');
         $product = [
-            'id' => $item['id']??null,
-            'slug' => $item['slug']??null,
-            'img' => $item['image']?$item['image']['src']??null:null,
+            'id' => $item['id'] ?? null,
+            'slug' => $item['slug'] ?? null,
+            'img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'trending' => $this->hasMetaKey($data['item'], 'product-trend'),
-            'topRated' => (bool)rand(0,1),
-            'bestSeller' => (bool)rand(0,1),
+            'topRated' => (bool)rand(0, 1),
+            'bestSeller' => (bool)rand(0, 1),
             'new' => !$isSpecial,
             'special_sale' => $isSpecial,
             'banner' => true,
-            'banner_img' =>  $item['image']?$item['image']['src']??null:null,
+            'banner_img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'sale_of_per' => 10, // Default sale percentage
-            'related_images' =>[],// ['image1.jpg', 'image2.jpg'],
-            'thumb_img' =>  $item['image']?$item['image']['src']??null:null,
-            'big_img' =>  $item['image']?$item['image']['src']??null:null,
+            'related_images' => [],// ['image1.jpg', 'image2.jpg'],
+            'thumb_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'big_img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'parentCategory' => 'Electronics',
             'category' => '',
             'brand' => '',
-            'title' =>  $item['title']??'',
+            'title' => $item['title'] ?? '',
             'price' => 120000,
             'old_price' => 249.99,
-            'rating' =>rand(0,5),
+            'rating' => rand(0, 5),
             'quantity' => 50,
             'orderQuantity' => 0, // Default order quantity
             'sm_desc' => 'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
             'sizes' => [],//['S', 'M', 'L'],
             'colors' => [],//['Red', 'Blue', 'Green'],
-            'weight' =>[],// 0.5, // Default weight in kilograms
+            'weight' => [],// 0.5, // Default weight in kilograms
             'dimension' => null,//10x15x5 cm', // Default dimensions
             'reviews' => [
                 //[
@@ -155,8 +155,9 @@ class ProductService implements ServiceInterface
             ],
         ];
 
-        $product['extra']['category']  =  $this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'category']);
-        if($product['extra']['category']){
+        $product['extra'] = [];
+        $product['extra']['category'] = $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'category']);
+        if ($product['extra']['category']) {
             $product['category'] = implode(
                 ",",
                 array_map(function ($item) {
@@ -167,18 +168,17 @@ class ProductService implements ServiceInterface
             );
         }
 
-        $productBrandList =$this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'brand']);
-        $product['extra']['brand']  =  (sizeof($productBrandList)>0)?$productBrandList[0]:[];
-        if($product['extra']['brand']){
-            $product['brand'] = isset($product['extra']['brand']['meta_value'])?$brandList[$product['extra']['brand']['meta_value']]['title']??'':'';
+        $productBrandList = $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'brand']);
+        $product['extra']['brand'] = (sizeof($productBrandList) > 0) ? $productBrandList[0] : [];
+        if ($product['extra']['brand']) {
+            $product['brand'] = isset($product['extra']['brand']['meta_value']) ? $brandList[$product['extra']['brand']['meta_value']]['title'] ?? '' : '';
         }
 
-        $productPriceList =$this->filterObjects(['list'=>$item['meta']??[] ,'value'=>'price']);
-        $product['extra']['price']  =  (sizeof($productPriceList)>0)?$productPriceList[0]:[];
-        if($product['extra']['price']){
-            $product['price'] =  (int)$product['extra']['price']['meta_value']??150000 ;
+        $productPriceList = $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'price']);
+        $product['extra']['price'] = (sizeof($productPriceList) > 0) ? $productPriceList[0] : [];
+        if ($product['extra']['price']) {
+            $product['price'] = (int)$product['extra']['price']['meta_value'] ?? 150000;
         }
-
 
 
         return $product;
@@ -186,20 +186,38 @@ class ProductService implements ServiceInterface
 
     public function getItem(object|array $requestBody): array
     {
-        $requestBody['type'] = $requestBody['type']??'';
+        $requestBody['type'] = $requestBody['type'] ?? '';
 
-        $categoryList    = $this->getCategoryObjectList();
-        $brandList       = $this->getBrandObjectList();
+        $categoryList = $this->getCategoryObjectList();
+        $brandList = $this->getBrandObjectList();
 
-        return $this->canonizeProductType1([
-            "item"=> $this->itemService->getItem($requestBody[$requestBody['type']],$requestBody['type']),
-            "category_list"=>$categoryList,
-            "brand_list"=>$brandList
+        $product = $this->canonizeProductType1([
+            "item" => $this->itemService->getItem($requestBody[$requestBody['type']], $requestBody['type']),
+            "category_list" => $categoryList,
+            "brand_list" => $brandList
         ]);
 
+        if (!empty($product)) {
+
+            $filter = [
+                'limit' => 8,
+                'page' => 1,
+            ];
+            if (!empty($product['extra']['category'])) {
+                $filter['category_list'] = array_column($product['extra']['category'], 'meta_value');
+            }
+            if (!empty($product['extra']['brand'])) {
+                $filter['brand_list'] = [$product['extra']['brand']['meta_value']];
+            }
+            $product['related_products'] = $this->getItemList($filter)['data']['list'];
+        }
+
+
+        return $product;
     }
 
-    private function hasMetaKey($data, $key) {
+    private function hasMetaKey($data, $key): bool
+    {
         if (isset($data['meta']) && is_array($data['meta'])) {
             foreach ($data['meta'] as $meta) {
                 if (isset($meta['meta_key']) && $meta['meta_key'] === $key) {
