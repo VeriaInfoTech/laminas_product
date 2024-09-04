@@ -2,6 +2,7 @@
 
 namespace Product\Factory\Service;
 
+use Content\Service\ItemService;
 use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -24,14 +25,11 @@ class CartServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null): CartService
     {
-        $config = $container->get('config');
-
-        return new CartService(
+         return new CartService(
             $container->get(AccountService::class),
             $container->get(UtilityService::class),
-            $container->get(MetaService::class),
-            ///TODO: kerloper: set config array in global if need it
-            []
+            $container->get(ItemService::class),
+            $container->get(MetaService::class)
         );
     }
 }

@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class CartListHandler implements RequestHandlerInterface
+class CartClearHandler implements RequestHandlerInterface
 {
     /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
@@ -38,7 +38,7 @@ class CartListHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $requestBody['status'] = 1;
-        $result = $this->productService->getItemList($requestBody);
+        $result = $this->productService->getItemUpdate($requestBody);
 
         return new JsonResponse($result);
     }

@@ -27,36 +27,26 @@ class CartService implements ServiceInterface
     /** @var MetaService */
     protected MetaService $metaService;
 
+    /** @var ItemService */
+    protected ItemService $itemService;
+
     public function __construct(
         AccountService $accountService,
         UtilityService $utilityService,
         MetaService    $metaService,
-                       $config
+        ItemService    $itemService
     )
     {
         $this->accountService = $accountService;
         $this->utilityService = $utilityService;
+        $this->itemService = $itemService;
         $this->metaService = $metaService;
-        $this->config = $config;
     }
 
-    public function getCartList(object|array $params): array
+    public function addCart(object|array|null $requestBody, mixed $account): array
     {
-        $params['limit'] = 200;
-        $list = $this->metaService->getMetaValueList($params)['data']['list'];
-        $tree = [];
-        $parent = [];
-        foreach ($list as $item) {
-            if ($item['parent_id'] == 0) {
-                $parent[] = $item;
-            } else {
-                $tree[(string)$item['parent_id']][] = $item;
-            }
-        }
-        foreach ($parent as $key => $node) {
-            $parent[$key]['children'] = $tree[(string)$node['id']];
-        }
-        return $parent;
+        $item = $this->itemService->getItem('cart','slug',['user_id'=>5]);
+        return [];
     }
 
 }

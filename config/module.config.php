@@ -1,6 +1,7 @@
 <?php
 
 namespace Product;
+use Laminas\Authentication\Validator\Authentication;
 use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\Router\Http\Literal;
 use User\Middleware\AuthenticationMiddleware;
@@ -27,6 +28,11 @@ return [
             Handler\Public\Category\CategoryListHandler::class => Factory\Handler\Public\Category\CategoryListHandlerFactory::class,
             //brand handlers
             Handler\Public\Brand\BrandListHandler::class => Factory\Handler\Public\Brand\BrandListHandlerFactory::class,
+
+            //start api section
+            //start cart section
+            Handler\Api\Cart\CartAddHandler::class => Factory\Handler\Api\Cart\CartAddHandlerFactory::class
+
         ],
     ],
 
@@ -162,16 +168,64 @@ return [
                             ],
                         ]
                     ],
+                    'installer' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/installer',
+                            'defaults' => [
+                                'module' => 'product',
+                                'section' => 'admin',
+                                'package' => 'installer',
+                                'handler' => 'installer',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    Handler\InstallerHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
                 ],
             ],
             // Api section
             'api_product' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route' => 'api/product',
+                    'route' => '/api/product',
                     'defaults' => [],
                 ],
                 'child_routes' => [
+                    'cart' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/cart',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'add',
+                                        'permission' => 'api-product-cart-add',
+                                        'validator'=>'add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Middleware\CartMiddleware::class,
+                                            Handler\Api\Cart\CartAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
                 ],
             ],
             // admin section

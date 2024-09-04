@@ -3,7 +3,19 @@
 return [
 
 
-    'api' => [],
+    'api' => [
+        [
+            'module' => 'product',
+            'section' => 'api',
+            'package' => 'cart',
+            'handler' => 'add',
+            'permission' => 'api-product-cart-add',
+            'role' => [
+                'admin',
+                'member',
+            ],
+        ],
+    ],
 
     'admin' => [
         [
