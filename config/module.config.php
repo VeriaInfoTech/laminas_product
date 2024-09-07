@@ -211,7 +211,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'add',
                                         'permission' => 'api-product-cart-add',
-                                        'validator'=>'add',
+                                        'validator'=>'inventory',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             RequestPreparationMiddleware::class,

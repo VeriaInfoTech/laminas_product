@@ -2,6 +2,7 @@
 
 namespace Product\Factory\Middleware;
 
+use Content\Service\ItemService;
 use Interop\Container\Containerinterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Product\Middleware\CartMiddleware;
@@ -27,7 +28,8 @@ class CartMiddlewareFactory implements FactoryInterface
         return new CartMiddleware(
             $container->get(ResponseFactoryInterface::class),
             $container->get(StreamFactoryInterface::class),
-            $container->get(ErrorHandler::class)
+            $container->get(ErrorHandler::class),
+            $container->get(ItemService::class)
         );
     }
 }

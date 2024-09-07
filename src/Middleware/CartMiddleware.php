@@ -2,11 +2,8 @@
 
 namespace Product\Middleware;
 
-use Content\Validator\SlugValidator;
-use Content\Validator\TypeValidator;
+use Content\Service\ItemService;
 use Fig\Http\Message\StatusCodeInterface;
-use Laminas\InputFilter\Input;
-use Laminas\InputFilter\InputFilter;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,47 +15,38 @@ use function implode;
 
 class CartMiddleware implements MiddlewareInterface
 {
-    public array $validationResult
-        = [
-            'status'  => true,
-            'code'    => StatusCodeInterface::STATUS_OK,
-            'message' => '',
-        ];
+    public array $InventoryResult = [
+        'status' => true,
+        'code' => StatusCodeInterface::STATUS_OK,
+        'message' => '',
+    ];
 
-    /** @var ResponseFactoryInterface */
     protected ResponseFactoryInterface $responseFactory;
-
-    /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
-
-    /** @var ErrorHandler */
+    protected ItemService $itemService;
     protected ErrorHandler $errorHandler;
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface $streamFactory,
-        ErrorHandler $errorHandler
+        StreamFactoryInterface   $streamFactory,
+        ItemService              $itemService,
+        ErrorHandler             $errorHandler
     ) {
         $this->responseFactory = $responseFactory;
-        $this->streamFactory   = $streamFactory;
-        $this->errorHandler    = $errorHandler;
+        $this->streamFactory = $streamFactory;
+        $this->itemService = $itemService;
+        $this->errorHandler = $errorHandler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // Get information from request
-        $parsedBody  = $request->getParsedBody();
-        $routeMatch  = $request->getAttribute('Laminas\Router\RouteMatch');
+        $parsedBody = $request->getParsedBody();
+        $routeMatch = $request->getAttribute('Laminas\Router\RouteMatch');
         $routeParams = $routeMatch->getParams();
 
-        // Check parsedBody
         switch ($routeParams['validator']) {
-            case 'list':
-                $this->listIsValid($parsedBody);
-                break;
-
-            case 'detail':
-                $this->detailIsValid($parsedBody);
+            case 'inventory':
+                $request = $this->inventoryValid($parsedBody, $request);
                 break;
 
             case 'reserve':
@@ -70,86 +58,76 @@ class CartMiddleware implements MiddlewareInterface
                 $request = $request->withAttribute(
                     'error',
                     [
-                        'message' => 'Validator not set !',
-                        'code'    => StatusCodeInterface::STATUS_FORBIDDEN,
+                        'message' => 'Inventory not set!',
+                        'code' => StatusCodeInterface::STATUS_FORBIDDEN,
                     ]
                 );
                 return $this->errorHandler->handle($request);
-                break;
         }
 
-        // Check if validation result is not true
-        if (!$this->validationResult['status']) {
-            $request = $request->withAttribute('status', $this->validationResult['code']);
+        if (!$this->InventoryResult['status']) {
+            $request = $request->withAttribute('status', $this->InventoryResult['code']);
             $request = $request->withAttribute(
                 'error',
                 [
-                    'message' => $this->validationResult['message'],
-                    'code'    => $this->validationResult['code'],
+                    'message' => $this->InventoryResult['message'],
+                    'code' => $this->InventoryResult['code'],
                 ]
             );
             return $this->errorHandler->handle($request);
         }
-        exit;
+
         return $handler->handle($request);
     }
 
-    protected function listIsValid($params)
+    protected function inventoryValid($params, ServerRequestInterface $request): ServerRequestInterface
     {
-        $type = new Input('type');
-        $type->getValidatorChain()->attach(new TypeValidator());
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($type);
-        $inputFilter->setData($params);
-
-        if (!$inputFilter->isValid()) {
-            return $this->setErrorHandler($inputFilter);
-        }
-    }
-
-    protected function setErrorHandler($inputFilter): array
-    {
-        $message = [];
-        foreach ($inputFilter->getInvalidInput() as $error) {
-            $message[$error->getName()] = implode(', ', $error->getMessages());
+        if (!isset($params[0])) {
+            $params = [$params];
         }
 
-        return $this->validationResult = [
-            'status'  => false,
-            'code'    => StatusCodeInterface::STATUS_FORBIDDEN,
-            'message' => $message,
-        ];
-    }
+        $idList = array_column($params, 'id');
+        $tempIdList = [];
+        $items = $this->itemService->getItemList(['type' => 'product', 'id' => $idList]);
+        $itemsList = $items['data']['list'];
+        $outOfStockItems = [];
 
-    protected function detailIsValid($params)
-    {
-        $slug = new Input('slug');
-        $slug->getValidatorChain()->attach(new SlugValidator());
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($slug);
-        $inputFilter->setData($params);
-
-        if (!$inputFilter->isValid()) {
-            return $this->setErrorHandler($inputFilter);
+        foreach ($itemsList as $item) {
+            $tempIdList[] = $item['id'];
+            $metaList = $item['meta'] ?? [];
+            $inventoryMeta = array_filter($metaList, fn($meta) => $meta['meta_key'] === 'inventory');
+            $inventoryValue = reset($inventoryMeta)['meta_value'] ?? 0;
+            foreach ($params as $object) {
+                if ($item['id'] === $object['id'] && $object['count'] > $inventoryValue) {
+                    $outOfStockItems[] = $item['title'];
+                }
+            }
         }
+
+        if (count($idList) != count($tempIdList)) {
+            $this->InventoryResult = [
+                'status' => false,
+                'code' => StatusCodeInterface::STATUS_FORBIDDEN,
+                'message' => sprintf("Can't find items with id: %s", implode(', ', array_diff($idList, $tempIdList))),
+            ];
+            return $request;
+        }
+
+        if (!empty($outOfStockItems)) {
+            $this->InventoryResult = [
+                'status' => false,
+                'code' => StatusCodeInterface::STATUS_FORBIDDEN,
+                'message' => sprintf("Out of stock for the following items: %s", implode(', ', $outOfStockItems)),
+            ];
+            return $request;
+        }
+
+        // Add the validated cart data to the request as an attribute
+        return $request->withAttribute('cart', $params);
     }
 
     protected function reserveIsValid($params)
     {
-        $code = new Input('code');
-        $itemId = new Input('item_id');
-        $code->getValidatorChain()->attach(new SlugValidator());
-        $itemId->getValidatorChain()->attach(new SlugValidator());
-
-        $inputFilter = new InputFilter();
-        $inputFilter->add($code);
-        $inputFilter->add($itemId);
-        $inputFilter->setData($params);
-
-        if (!$inputFilter->isValid()) {
-            return $this->setErrorHandler($inputFilter);
-        }
+        // Reservation validation logic here
     }
 }

@@ -39,12 +39,15 @@ class CartAddHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
         $account = $request->getAttribute("account");
-        $result = $this->cartService->addCart($requestBody,$account);
+        $params=[
+            'cart'=> $request->getAttribute("cart"),
+        ];
+        $result = $this->cartService->addCart($params, $account);
         return new JsonResponse(
             [
                 'result' => true,
-                'data'   => $result,
-                'error'  => [],
+                'data' => $result,
+                'error' => [],
             ],
         );
     }
