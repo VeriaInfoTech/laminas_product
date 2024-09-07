@@ -66,6 +66,9 @@ class CartService implements ServiceInterface
 
     private function canonizeCart(array $cartData, string $type = 'product'): array
     {
+        if(empty($cartData)){
+            return [];
+        }
         $cartItems = $cartData['cart'];
         $idList = array_column($cartItems, 'id');
         $products = $this->itemService->getItemList(['type' => 'product', 'id' => $idList])['data']['list'];
@@ -111,6 +114,17 @@ class CartService implements ServiceInterface
             return isset($meta['meta_key']) && $meta['meta_key'] === $key;
         });
         return $meta ? reset($meta) : null;
+    }
+
+    public function updateCart(array $params, mixed $account): array
+    {
+        $this->clearCart($account);
+        return $this->addCart($params, $account);
+    }
+
+    public function clearCart(mixed $account): void
+    {
+        $this->itemService->destroyItem(['slug' => 'cart_' . $account['id']]);
     }
 
 }

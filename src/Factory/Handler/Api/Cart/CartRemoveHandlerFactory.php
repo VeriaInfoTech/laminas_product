@@ -2,9 +2,8 @@
 
 namespace Product\Factory\Handler\Api\Cart;
 
-use Product\Handler\Api\Cart\CartAddHandler;
+use Product\Handler\Api\Cart\CartRemoveHandler;
 use Product\Service\CartService;
-use Product\Service\ProductService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -19,13 +18,13 @@ class CartRemoveHandlerFactory implements FactoryInterface
      * @param string             $requestedName
      * @param null|array         $options
      *
-     * @return CartAddHandler
+     * @return CartRemoveHandler
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): CartAddHandler
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): CartRemoveHandler
     {
-        return new CartAddHandler(
+        return new CartRemoveHandler(
             $container->get(ResponseFactoryInterface::class),
             $container->get(StreamFactoryInterface::class),
             $container->get(CartService::class)

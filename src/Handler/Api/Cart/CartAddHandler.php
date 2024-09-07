@@ -3,7 +3,6 @@
 namespace Product\Handler\Api\Cart;
 
 use Product\Service\CartService;
-use Product\Service\ProductService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,8 +35,6 @@ class CartAddHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // Get request body
-        $requestBody = $request->getParsedBody();
         $account = $request->getAttribute("account");
         $params=[
             'cart'=> $request->getAttribute("cart"),

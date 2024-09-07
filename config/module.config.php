@@ -31,7 +31,11 @@ return [
 
             //start api section
             //start cart section
-            Handler\Api\Cart\CartAddHandler::class => Factory\Handler\Api\Cart\CartAddHandlerFactory::class
+            Handler\Api\Cart\CartGetHandler::class => Factory\Handler\Api\Cart\CartGetHandlerFactory::class,
+            Handler\Api\Cart\CartAddHandler::class => Factory\Handler\Api\Cart\CartAddHandlerFactory::class,
+            Handler\Api\Cart\CartUpdateHandler::class => Factory\Handler\Api\Cart\CartUpdateHandlerFactory::class,
+            Handler\Api\Cart\CartRemoveHandler::class => Factory\Handler\Api\Cart\CartRemoveHandlerFactory::class,
+            Handler\Api\Cart\CartClearHandler::class => Factory\Handler\Api\Cart\CartClearHandlerFactory::class
 
         ],
     ],
@@ -201,6 +205,28 @@ return [
                             'defaults' => [],
                         ],
                         'child_routes' => [
+                            'get' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/get',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'get',
+                                        'permission' => 'api-product-cart-get',
+                                        'validator'=>'get',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Middleware\CartMiddleware::class,
+                                            Handler\Api\Cart\CartGetHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
                             'add' => [
                                 'type' => Literal::class,
                                 'options' => [
@@ -211,7 +237,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'add',
                                         'permission' => 'api-product-cart-add',
-                                        'validator'=>'inventory',
+                                        'validator'=>'add',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             RequestPreparationMiddleware::class,
@@ -220,6 +246,74 @@ return [
                                             AuthorizationMiddleware::class,
                                             Middleware\CartMiddleware::class,
                                             Handler\Api\Cart\CartAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'update' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/update',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'update',
+                                        'permission' => 'api-product-cart-update',
+                                        'validator'=>'update',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Middleware\CartMiddleware::class,
+                                            Handler\Api\Cart\CartUpdateHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'remove' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/remove',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'remove',
+                                        'permission' => 'api-product-cart-remove',
+                                        'validator'=>'remove',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Middleware\CartMiddleware::class,
+                                            Handler\Api\Cart\CartRemoveHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'clear' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/clear',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'clear',
+                                        'permission' => 'api-product-cart-clear',
+                                        'validator'=>'clear',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Middleware\CartMiddleware::class,
+                                            Handler\Api\Cart\CartClearHandler::class
                                         ),
                                     ],
                                 ],

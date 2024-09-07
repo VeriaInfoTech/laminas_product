@@ -31,7 +31,8 @@ class CartMiddleware implements MiddlewareInterface
         StreamFactoryInterface   $streamFactory,
         ItemService              $itemService,
         ErrorHandler             $errorHandler
-    ) {
+    )
+    {
         $this->responseFactory = $responseFactory;
         $this->streamFactory = $streamFactory;
         $this->itemService = $itemService;
@@ -45,8 +46,20 @@ class CartMiddleware implements MiddlewareInterface
         $routeParams = $routeMatch->getParams();
 
         switch ($routeParams['validator']) {
-            case 'inventory':
+            case 'clear':
+            case 'get':
+                break;
+
+            case 'add':
                 $request = $this->inventoryValid($parsedBody, $request);
+                break;
+
+            case 'remove':
+                $request = $this->removeValid($parsedBody, $request);
+                break;
+
+            case 'update':
+                $request = $this->updateValid($parsedBody, $request);
                 break;
 
             case 'reserve':
@@ -76,7 +89,6 @@ class CartMiddleware implements MiddlewareInterface
             );
             return $this->errorHandler->handle($request);
         }
-
         return $handler->handle($request);
     }
 
@@ -98,7 +110,7 @@ class CartMiddleware implements MiddlewareInterface
             $inventoryMeta = array_filter($metaList, fn($meta) => $meta['meta_key'] === 'inventory');
             $inventoryValue = reset($inventoryMeta)['meta_value'] ?? 0;
             foreach ($params as $object) {
-                if ($item['id'] === $object['id'] && $object['count'] > $inventoryValue) {
+                if ($item['id'] === $object['id'] && $inventoryValue < $object['count']) {
                     $outOfStockItems[] = $item['title'];
                 }
             }
@@ -129,5 +141,51 @@ class CartMiddleware implements MiddlewareInterface
     protected function reserveIsValid($params)
     {
         // Reservation validation logic here
+    }
+
+    private function updateValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
+    {
+        if (!isset($params[0])) {
+            $params = [$params];
+        }
+        $items = $this->itemService->getItem('cart_' . $request->getAttribute('account')['id'], 'slug');
+        $result = [];
+
+        // cart is empty and this action is as add-cart
+        if (empty($items)) {
+            $result = $params;
+        } else {
+            $carts = $items['cart'];
+            $combined = array_merge($params, $carts);
+            foreach ($combined as $item) {
+                $id = $item['id'];
+                $count = $item['count'];
+                if (isset($result[$id])) {
+                    $result[$id]['count'] += $count;
+                } else {
+                    $result[$id] = [
+                        'id' => $id,
+                        'count' => $count
+                    ];
+                }
+            }
+        }
+        return $this->inventoryValid(array_values($result), $request);
+    }
+
+    private function removeValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
+    {
+        if (!isset($params[0])) {
+            $params = [$params];
+        }
+        $result = [];
+        $items = $this->itemService->getItem('cart_' . $request->getAttribute('account')['id'], 'slug');
+
+        if (!empty($items)) {
+            $idList = array_column($params, 'id');
+            $carts = $items['cart'];
+            $result = array_filter($carts,fn($item)=>!in_array($item['id'], $idList));
+        }
+        return $request->withAttribute('cart', $result);
     }
 }

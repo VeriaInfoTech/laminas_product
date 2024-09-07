@@ -4,7 +4,6 @@ namespace Product\Factory\Handler\Api\Cart;
 
 use Product\Handler\Api\Cart\CartAddHandler;
 use Product\Service\CartService;
-use Product\Service\ProductService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
