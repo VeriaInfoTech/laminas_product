@@ -7,6 +7,7 @@ use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Product\Service\CartService;
+use Product\Service\ProductService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Service\AccountService;
@@ -29,7 +30,8 @@ class CartServiceFactory implements FactoryInterface
             $container->get(AccountService::class),
             $container->get(UtilityService::class),
             $container->get(ItemService::class),
-            $container->get(MetaService::class)
+            $container->get(MetaService::class),
+            $container->get(ProductService::class),
         );
     }
 }

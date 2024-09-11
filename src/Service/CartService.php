@@ -25,21 +25,28 @@ class CartService implements ServiceInterface
     /** @var ItemService */
     protected ItemService $itemService;
 
+
+    /** @var ProductService */
+    protected ProductService $productService;
+
     public function __construct(
         AccountService $accountService,
         UtilityService $utilityService,
         MetaService    $metaService,
-        ItemService    $itemService
+        ItemService    $itemService,
+        ProductService $productService
     )
     {
         $this->accountService = $accountService;
         $this->utilityService = $utilityService;
         $this->itemService = $itemService;
         $this->metaService = $metaService;
+        $this->productService = $productService;
     }
 
     public function addCart(object|array|null $requestBody, mixed $account): array
     {
+        ///TODO: handle when call this method but a cart has been stored
         $cart = $this->getCart($account);
         if (empty($cart)) {
             $params = [
@@ -59,7 +66,7 @@ class CartService implements ServiceInterface
 
     public function getCart($account): array
     {
-        $cart = $this->itemService->getItem('cart_' . $account['id'], 'slug', ['user_id' => $account['id']]);
+        $cart = $this->itemService->getItem('cart-' . $account['id'], 'slug', ['user_id' => $account['id']]);
         $cart = $this->canonizeCart($cart);
         return $cart;
     }
@@ -71,7 +78,8 @@ class CartService implements ServiceInterface
         }
         $cartItems = $cartData['cart'];
         $idList = array_column($cartItems, 'id');
-        $products = $this->itemService->getItemList(['type' => 'product', 'id' => $idList])['data']['list'];
+        //$products = $this->itemService->getItemList(['type' => 'product', 'id' => $idList])['data']['list'];
+        $products = $this->productService->getItemList(['id' => $idList])['data']['list'];
         $items = [];
         foreach ($cartItems as $cartItem) {
             foreach ($products as $product) {

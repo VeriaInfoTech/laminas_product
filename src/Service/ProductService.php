@@ -156,6 +156,7 @@ class ProductService implements ServiceInterface
         ];
 
         $product['extra'] = [];
+        $product['meta'] =$item['meta'];
         $product['extra']['category'] = $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'category']);
         if ($product['extra']['category']) {
             $product['category'] = implode(
