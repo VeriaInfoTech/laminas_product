@@ -48,20 +48,20 @@ class CartService implements ServiceInterface
     {
         ///TODO: handle when call this method but a cart has been stored
         $cart = $this->getCart($account);
-        if (empty($cart)) {
-            $params = [
-                'user_id' => $account['id'],
-                'type' => 'cart',
-                'status' => 1,
-                'slug' => 'cart-' . $account['id'],
-                'time_create' => time()
-            ];
-            $information = array_merge($params, $requestBody);
-            $params['information'] = json_encode($information);
-            $this->itemService->addItem($params, $account);
-            $cart = $this->getCart($account);
+        if (!empty($cart)) {
+            $this->clearCart($account);
         }
-        return $cart;
+        $params = [
+            'user_id' => $account['id'],
+            'type' => 'cart',
+            'status' => 1,
+            'slug' => 'cart-' . $account['id'],
+            'time_create' => time()
+        ];
+        $information = array_merge($params, $requestBody);
+        $params['information'] = json_encode($information);
+        $this->itemService->addItem($params, $account);
+        return $this->getCart($account);
     }
 
     public function getCart($account): array
@@ -73,7 +73,7 @@ class CartService implements ServiceInterface
 
     private function canonizeCart(array $cartData, string $type = 'product'): array
     {
-        if(empty($cartData)){
+        if (empty($cartData)) {
             return [];
         }
         $cartItems = $cartData['cart'];
@@ -92,7 +92,7 @@ class CartService implements ServiceInterface
                         'price_unit' => $price,
                         'price' => $price * $inventory,
                         'status' => $cartItem['count'] > $inventory ? 'out_of_stock' : 'in_stock',
-                        'information'=>$product
+                        'information' => $product
                     ];
 
                 }
@@ -101,11 +101,11 @@ class CartService implements ServiceInterface
         unset($cartData['cart']);
         $cartData['cart'] = [
             'total_count' => count($items),
-            'total_item_count' => array_sum(array_column($items,'count')),
-            'available_count' => count(array_filter($items,fn($item) => $item['status'] === 'in_stock')),
-            'available_item_count' => array_sum(array_column(array_filter($items,fn($item) => $item['status'] === 'in_stock'),'count')),
-            'total_price'=>array_sum(array_column($items,'price')),
-            'payable_price'=>array_sum(array_column(array_filter($items,fn($item) => $item['status'] === 'in_stock'),'price')),
+            'total_item_count' => array_sum(array_column($items, 'count')),
+            'available_count' => count(array_filter($items, fn($item) => $item['status'] === 'in_stock')),
+            'available_item_count' => array_sum(array_column(array_filter($items, fn($item) => $item['status'] === 'in_stock'), 'count')),
+            'total_price' => array_sum(array_column($items, 'price')),
+            'payable_price' => array_sum(array_column(array_filter($items, fn($item) => $item['status'] === 'in_stock'), 'price')),
             'items' => $items,
         ];
         return $cartData;
