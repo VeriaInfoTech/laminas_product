@@ -62,6 +62,10 @@ class CartMiddleware implements MiddlewareInterface
                 $request = $this->updateValid($parsedBody, $request);
                 break;
 
+            case 'physical_order':
+                $request = $this->physicalOrderValid($parsedBody, $request);
+                break;
+
             case 'reserve':
                 $this->reserveIsValid($parsedBody);
                 break;
@@ -142,7 +146,6 @@ class CartMiddleware implements MiddlewareInterface
     {
         // Reservation validation logic here
     }
-
     private function updateValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
     {
         if (!isset($params[0])) {
@@ -188,4 +191,28 @@ class CartMiddleware implements MiddlewareInterface
         }
         return $request->withAttribute('cart', $result);
     }
+
+    //for check inventory on order module [create order handler]
+    private function physicalOrderValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
+    {
+        if(!isset($params['address'])||!isset($params['cart_id'])) {
+            $this->InventoryResult = [
+                'status' => false,
+                'code' => StatusCodeInterface::STATUS_FORBIDDEN,
+                'message' => sprintf('%s,%s not set!',isset($params['address'])?'':'Address',isset($params['cart_id'])?'':'Cart'),
+            ];
+            return $request;
+        }
+        $items = $this->itemService->getItem($params['cart_id']);
+        if(empty($items)){
+            $this->InventoryResult = [
+                'status' => false,
+                'code' => StatusCodeInterface::STATUS_FORBIDDEN,
+                'message' => 'Cart not found!',
+            ];
+            return $request;
+        }
+        return $this->inventoryValid($items['cart'],$request);
+    }
+
 }
