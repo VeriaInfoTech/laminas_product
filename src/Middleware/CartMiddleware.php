@@ -148,7 +148,7 @@ class CartMiddleware implements MiddlewareInterface
         if (!isset($params[0])) {
             $params = [$params];
         }
-        $items = $this->itemService->getItem('cart_' . $request->getAttribute('account')['id'], 'slug');
+        $items = $this->itemService->getItem('cart-' . $request->getAttribute('account')['id'], 'slug');
         $result = [];
 
         // cart is empty and this action is as add-cart
@@ -179,7 +179,7 @@ class CartMiddleware implements MiddlewareInterface
             $params = [$params];
         }
         $result = [];
-        $items = $this->itemService->getItem('cart_' . $request->getAttribute('account')['id'], 'slug');
+        $items = $this->itemService->getItem('cart-' . $request->getAttribute('account')['id'], 'slug');
 
         if (!empty($items)) {
             $idList = array_column($params, 'id');

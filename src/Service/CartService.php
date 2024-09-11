@@ -46,7 +46,7 @@ class CartService implements ServiceInterface
                 'user_id' => $account['id'],
                 'type' => 'cart',
                 'status' => 1,
-                'slug' => 'cart_' . $account['id'],
+                'slug' => 'cart-' . $account['id'],
                 'time_create' => time()
             ];
             $information = array_merge($params, $requestBody);
@@ -124,7 +124,7 @@ class CartService implements ServiceInterface
 
     public function clearCart(mixed $account): void
     {
-        $this->itemService->destroyItem(['slug' => 'cart_' . $account['id']]);
+        $this->itemService->destroyItem(['slug' => 'cart-' . $account['id']]);
     }
 
 }
