@@ -146,6 +146,7 @@ class CartMiddleware implements MiddlewareInterface
     {
         // Reservation validation logic here
     }
+
     private function updateValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
     {
         if (!isset($params[0])) {
@@ -163,9 +164,8 @@ class CartMiddleware implements MiddlewareInterface
             foreach ($combined as $item) {
                 $id = $item['id'];
                 $count = $item['count'];
-                if (isset($result[$id])) {
-                    $result[$id]['count'] = $count;
-                } else {
+                ///TODO:double check this , if is not needing plus and minus , then remove this condition (now this is false in over)
+                if (!isset($result[$id])) {
                     $result[$id] = [
                         'id' => $id,
                         'count' => $count
@@ -187,7 +187,7 @@ class CartMiddleware implements MiddlewareInterface
         if (!empty($items)) {
             $idList = array_column($params, 'id');
             $carts = $items['cart'];
-            $result = array_filter($carts,fn($item)=>!in_array($item['id'], $idList));
+            $result = array_filter($carts, fn($item) => !in_array($item['id'], $idList));
         }
         return $request->withAttribute('cart', $result);
     }
@@ -195,16 +195,16 @@ class CartMiddleware implements MiddlewareInterface
     //for check inventory on order module [create order handler]
     private function physicalOrderValid(object|array|null $params, ServerRequestInterface $request): ServerRequestInterface
     {
-        if(!isset($params['address'])||!isset($params['cart_id'])) {
+        if (!isset($params['address']) || !isset($params['cart_id'])) {
             $this->InventoryResult = [
                 'status' => false,
                 'code' => StatusCodeInterface::STATUS_FORBIDDEN,
-                'message' => sprintf('%s,%s not set!',isset($params['address'])?'':'Address',isset($params['cart_id'])?'':'Cart'),
+                'message' => sprintf('%s,%s not set!', isset($params['address']) ? '' : 'Address', isset($params['cart_id']) ? '' : 'Cart'),
             ];
             return $request;
         }
         $items = $this->itemService->getItem($params['cart_id']);
-        if(empty($items)){
+        if (empty($items)) {
             $this->InventoryResult = [
                 'status' => false,
                 'code' => StatusCodeInterface::STATUS_FORBIDDEN,
@@ -212,7 +212,7 @@ class CartMiddleware implements MiddlewareInterface
             ];
             return $request;
         }
-        return $this->inventoryValid($items['cart'],$request);
+        return $this->inventoryValid($items['cart'], $request);
     }
 
 }
