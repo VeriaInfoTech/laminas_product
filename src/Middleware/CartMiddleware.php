@@ -164,7 +164,7 @@ class CartMiddleware implements MiddlewareInterface
                 $id = $item['id'];
                 $count = $item['count'];
                 if (isset($result[$id])) {
-                    $result[$id]['count'] += $count;
+                    $result[$id]['count'] = $count;
                 } else {
                     $result[$id] = [
                         'id' => $id,
