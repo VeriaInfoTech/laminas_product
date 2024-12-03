@@ -111,6 +111,7 @@ class ProductService implements ServiceInterface
         $isSpecial = $this->hasMetaKey($data['item'], 'product-special');
         $product = [
             'id' => $item['id'] ?? null,
+            'abstract'=> $item['abstract'] ?? null,
             'slug' => $item['slug'] ?? null,
             'img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'trending' => $this->hasMetaKey($data['item'], 'product-trend'),
