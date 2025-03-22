@@ -54,7 +54,7 @@ class CategoryService implements ServiceInterface
             }
         }
         foreach ($parent as $key => $node) {
-            $parent[$key]['children'] = $tree[(string)$node['id']];
+            $parent[$key]['children'] =$tree[(string)$node['id']]??[];
         }
         return $parent;
     }
