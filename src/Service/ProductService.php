@@ -109,22 +109,33 @@ class ProductService implements ServiceInterface
         $brandList = $data['brand_list'] ?? [];
         $categoryList = $data['category_list'] ?? [];
         $isSpecial = $this->hasMetaKey($data['item'], 'product-special');
+        $uniqNumber = $this->getNumberFromId( $item['id'] ?? 1);
+        $img ="https://karen.kerloper.com/uploads/swiper-0$uniqNumber.png";
         $product = [
             'id' => $item['id'] ?? null,
             'abstract'=> $item['abstract'] ?? null,
             'slug' => $item['slug'] ?? null,
-            'img' => $item['image'] ? $item['image']['src'] ?? null : null,
+//            'img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'img' => $img,
             'trending' => $this->hasMetaKey($data['item'], 'product-trend'),
             'topRated' => (bool)rand(0, 1),
             'bestSeller' => (bool)rand(0, 1),
             'new' => !$isSpecial,
             'special_sale' => $isSpecial,
             'banner' => true,
-            'banner_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+//            'banner_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'banner_img' => $img,
             'sale_of_per' => 10, // Default sale percentage
-            'related_images' => [],// ['image1.jpg', 'image2.jpg'],
-            'thumb_img' => $item['image'] ? $item['image']['src'] ?? null : null,
-            'big_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'related_images' =>[
+                $img,
+                $img,
+                $img,
+                $img,
+            ],
+//            'thumb_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'thumb_img' => $img,
+//            'big_img' => $item['image'] ? $item['image']['src'] ?? null : null,
+            'big_img' => $img,
             'parentCategory' => 'Electronics',
             'category' => '',
             'brand' => '',
@@ -228,6 +239,26 @@ class ProductService implements ServiceInterface
             }
         }
         return false;
+    }
+
+
+
+    public function getNumberFromId($id): int
+    {
+        // Define the pool of numbers
+        $numbers = [4, 5, 6];
+        $count = count($numbers);
+
+        // Use the ID to select a number and ensure no consecutive duplicates
+        $currentIndex = $id % $count;
+        $previousIndex = ($id - 1) % $count;
+
+        // If the current index matches the previous index, shift by 1
+        if ($currentIndex === $previousIndex) {
+            $currentIndex = ($currentIndex + 1) % $count;
+        }
+
+        return $numbers[$currentIndex];
     }
 
 }
