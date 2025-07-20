@@ -1,6 +1,7 @@
 <?php
 
 namespace Product;
+
 use Laminas\Authentication\Validator\Authentication;
 use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\Router\Http\Literal;
@@ -13,7 +14,7 @@ return [
     'service_manager' => [
         'aliases' => [
             Repository\ProductRepositoryInterface::class => Repository\ProductRepository::class,
-            ],
+        ],
         'factories' => [
             //start services factories
             Service\ProductService::class => Factory\Service\ProductServiceFactory::class,
@@ -24,6 +25,7 @@ return [
             Handler\Public\Item\ItemHomeHandler::class => Factory\Handler\Public\Item\ItemHomeHandlerFactory::class,
             Handler\Public\Item\ItemListHandler::class => Factory\Handler\Public\Item\ItemListHandlerFactory::class,
             Handler\Public\Item\ItemGetHandler::class => Factory\Handler\Public\Item\ItemGetHandlerFactory::class,
+            Handler\Public\InitHandler::class => Factory\Handler\Public\InitHandlerFactory::class,
             //category handlers
             Handler\Public\Category\CategoryListHandler::class => Factory\Handler\Public\Category\CategoryListHandlerFactory::class,
             //brand handlers
@@ -188,6 +190,22 @@ return [
                             ],
                         ],
                     ],
+                    'init' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/init',
+                            'defaults' => [
+                                'module' => 'product',
+                                'section' => 'admin',
+                                'package' => 'init',
+                                'handler' => 'init',
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    Handler\Public\InitHandler::class
+                                ),
+                            ],
+                        ],
+                    ],
                 ],
             ],
             // Api section
@@ -215,7 +233,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'get',
                                         'permission' => 'api-product-cart-get',
-                                        'validator'=>'get',
+                                        'validator' => 'get',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             SecurityMiddleware::class,
@@ -237,7 +255,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'add',
                                         'permission' => 'api-product-cart-add',
-                                        'validator'=>'add',
+                                        'validator' => 'add',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             RequestPreparationMiddleware::class,
@@ -260,7 +278,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'update',
                                         'permission' => 'api-product-cart-update',
-                                        'validator'=>'update',
+                                        'validator' => 'update',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             RequestPreparationMiddleware::class,
@@ -283,7 +301,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'remove',
                                         'permission' => 'api-product-cart-remove',
-                                        'validator'=>'remove',
+                                        'validator' => 'remove',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             RequestPreparationMiddleware::class,
@@ -306,7 +324,7 @@ return [
                                         'package' => 'cart',
                                         'handler' => 'clear',
                                         'permission' => 'api-product-cart-clear',
-                                        'validator'=>'clear',
+                                        'validator' => 'clear',
                                         'controller' => PipeSpec::class,
                                         'middleware' => new PipeSpec(
                                             SecurityMiddleware::class,

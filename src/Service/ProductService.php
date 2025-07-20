@@ -48,6 +48,11 @@ class ProductService implements ServiceInterface
     public function getItemList(object|array $params): array
     {
         $params['type'] = 'product';
+        if(isset($params['order'])){
+            $params['order'] = str_replace('price','title',$params['order']);
+            $params['order'] = str_replace('view','slug',$params['order']);
+            $params['order'] = str_replace('sale','time_update',$params['order']);
+        }
         $data = $this->itemService->getItemList($params);
         $list = $data['data']['list'];
         $listType1 = [];
@@ -61,6 +66,7 @@ class ProductService implements ServiceInterface
             ]);
         }
         $data['data']['list'] = $listType1;
+        $data['data']['filter'] = $params;
         return $data;
 
     }
@@ -107,34 +113,29 @@ class ProductService implements ServiceInterface
             return [];
 
         $brandList = $data['brand_list'] ?? [];
-        $categoryList = $data['category_list'] ?? [];
         $isSpecial = $this->hasMetaKey($data['item'], 'product-special');
-        $uniqNumber = $this->getNumberFromId( $item['id'] ?? 1);
-        $img ="https://karen.kerloper.com/uploads/swiper-0$uniqNumber.png";
+        $img ="https://karen.kerloper.com/uploads/compose/{$item['slug']}.png?reload=".time();
         $product = [
             'id' => $item['id'] ?? null,
             'abstract'=> $item['abstract'] ?? null,
-            'slug' => $item['slug'] ?? null,
-//            'img' => $item['image'] ? $item['image']['src'] ?? null : null,
-            'img' => $img,
+            'slug' => $item['slug'] ?? $img,
+//            'img' => $img,
+            'img' => $item['image']['src'] ?? null,
             'trending' => $this->hasMetaKey($data['item'], 'product-trend'),
             'topRated' => (bool)rand(0, 1),
             'bestSeller' => (bool)rand(0, 1),
             'new' => !$isSpecial,
             'special_sale' => $isSpecial,
             'banner' => true,
-//            'banner_img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'banner_img' => $img,
-            'sale_of_per' => 10, // Default sale percentage
-            'related_images' =>[
+            'sale_of_per' => 10,
+            'related_images' =>$item['related_images']??[
                 $img,
                 $img,
                 $img,
                 $img,
             ],
-//            'thumb_img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'thumb_img' => $img,
-//            'big_img' => $item['image'] ? $item['image']['src'] ?? null : null,
             'big_img' => $img,
             'parentCategory' => 'Electronics',
             'category' => '',
@@ -144,26 +145,20 @@ class ProductService implements ServiceInterface
             'old_price' => 249.99,
             'rating' => rand(0, 5),
             'quantity' => 50,
-            'orderQuantity' => 0, // Default order quantity
-            'sm_desc' => 'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
-            'sizes' => [],//['S', 'M', 'L'],
-            'colors' => [],//['Red', 'Blue', 'Green'],
-            'weight' => [],// 0.5, // Default weight in kilograms
-            'dimension' => null,//10x15x5 cm', // Default dimensions
+            'orderQuantity' => 0,
+//            'sm_desc' => 'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
+            'sm_desc' => $item['abstract'] ??'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
+            'sizes' => [],
+            'colors' => [],
+            'weight' => [],
+            'dimension' => null,
             'reviews' => [
-                //[
-                //    'img' => 'user1.jpg',
-                //    'name' => 'John Doe',
-                //    'time' => '2024-07-27',
-                //    'rating' => 4,
-                //    'children' => true,
-                //],
-                // Add more review entries as needed
             ],
             'details' => [
-                'details_text' => 'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
-                'details_list' => [],//['Feature 1', 'Feature 2', 'Feature 3'],
-                'details_text_2' => []//'Additional details if necessary.',
+//                'details_text' => 'لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
+                'details_text' => $item['description'] ??'dddddلورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند',
+//                'details_list' => ['dsafsdf'],
+//                'details_text_2' => ['aaaa']
             ],
         ];
 
@@ -192,8 +187,7 @@ class ProductService implements ServiceInterface
         if ($product['extra']['price']) {
             $product['price'] = (int)$product['extra']['price']['meta_value'] ?? 150000;
         }
-
-
+        $product['middle_banner'] = "https://karen.kerloper.com/uploads/product.jpg";
         return $product;
     }
 
