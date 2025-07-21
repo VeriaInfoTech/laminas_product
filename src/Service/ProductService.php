@@ -217,6 +217,35 @@ class ProductService implements ServiceInterface
                 $filter['brand_list'] = [$product['extra']['brand']['meta_value']];
             }
             $product['related_products'] = $this->getItemList($filter)['data']['list'];
+
+            $product['comments'] = [
+                [
+                    "user" => "سامان شاخص",
+                    "data_time" => "2025-07-21 18:45",
+                    "text" => "این محصول واقعا عالیه، خیلی راضیم."
+                ],
+                [
+                    "user" => "نرگس احمدی",
+                    "data_time" => "2025-07-20 10:12",
+                    "text" => "ارسال سریع بود و بسته‌بندی مناسب داشت."
+                ],
+                [
+                    "user" => "محسن رضایی",
+                    "data_time" => "2025-07-19 21:30",
+                    "text" => "کیفیتش خوبه ولی قیمتش یه مقدار بالاست."
+                ],
+                [
+                    "user" => "الهه کریمی",
+                    "data_time" => "2025-07-18 14:03",
+                    "text" => "پیشنهاد می‌کنم قبل از خرید اندازه‌اش رو چک کنید."
+                ],
+                [
+                    "user" => "علی عباسی",
+                    "data_time" => "2025-07-17 09:57",
+                    "text" => "من برای بار دوم این محصول رو خریدم، عالیه."
+                ]
+            ];
+
         }
 
 

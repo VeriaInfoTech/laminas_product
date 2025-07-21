@@ -56,22 +56,22 @@ class ItemHomeHandler implements RequestHandlerInterface
         // Get request body
         $requestBody = $request->getParsedBody();
 
-        if(!isset($requestBody['caller'])){
-            $requestBody['caller']= 'base-shop';
+        if (!isset($requestBody['caller'])) {
+            $requestBody['caller'] = 'base-shop';
         }
 
         $result = [];
-        if( isset($requestBody['caller'])) {
+        if (isset($requestBody['caller'])) {
             switch ($requestBody['caller']) {
                 case 'shop':
                     $result = [
                         "banner" => [
                             // "image"=>"https://karen.kerloper.com/uploads/1920-1000.jpg?reload=".time(),
-                            "image"=>"https://karen.kerloper.com/uploads/0003.jpg",
-                            "subhead"=>" تجربه تغییر رکوردها با ",
-                            "title"=>"مکمل های ورزشی پیشرو در بدنسازی"
+                            "image" => "https://karen.kerloper.com/uploads/0003.jpg",
+                            "subhead" => " تجربه تغییر رکوردها با ",
+                            "title" => "مکمل های ورزشی پیشرو در بدنسازی"
                         ],
-                        "slider_product"=>[
+                        "slider_product" => [
                             "list" => $this->productService->getItemList([
                                 'type' => 'product',
                                 'product_popular' => 1,
@@ -86,98 +86,101 @@ class ItemHomeHandler implements RequestHandlerInterface
                     ];
                     break;
                 case 'base-karen-shop':
+
+
                     $sliders = $this->itemService->getItem('home-slider-2024', 'slug');
                     $result = [
 
                         "sliders" => isset($sliders['banner_list']) ? $sliders['banner_list'] : [],
-                        "sub_slogan" =>"لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک",
-                        "middle_sliders"=>[[
-                            "id"=>"294",
-                            "image"=>"https://karen.kerloper.com/uploads/e5.jpg?reload=".time(),
-                            "title"=>"کیدز بار ",
-                            "subtitle"=>"توت فرنگی و وانیل",
-                            "en_title"=>"MAXMUSCLE MAX BCCA"
-                        ],
+                        "sub_slogan" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک",
+                        "middle_sliders" => [
                             [
-                                "id"=>"294",
-                                "image"=>"https://karen.kerloper.com/uploads/e6.jpg?reload=".time(),
-                                "title"=>"کیدز بار ",
-                                "subtitle"=>"توت فرنگی و وانیل",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "id" => "294",
+                                "image" => "https://karen.kerloper.com/uploads/e5.jpg?reload=" . time(),
+                                "title" => "کیدز بار ",
+                                "subtitle" => "توت فرنگی و وانیل",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
                             [
-                                "id"=>"288",
-                                "image"=>"https://karen.kerloper.com/uploads/e7.jpg?reload=".time(),
-                                "title"=>"پروتئین بار ",
-                                "subtitle"=>"شکلاتی",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "id" => "294",
+                                "image" => "https://karen.kerloper.com/uploads/e6.jpg?reload=" . time(),
+                                "title" => "کیدز بار ",
+                                "subtitle" => "توت فرنگی و وانیل",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/e1.jpg?reload=".time(),
-                                "title"=>"انرژی بار ",
-                                "id"=>"289",
-                                "subtitle"=>"طعم شکلاتی - کافیین دار",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "id" => "288",
+                                "image" => "https://karen.kerloper.com/uploads/e7.jpg?reload=" . time(),
+                                "title" => "پروتئین بار ",
+                                "subtitle" => "شکلاتی",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
                             [
-                                "id"=>"289",
-                                "image"=>"https://karen.kerloper.com/uploads/e2.jpg?reload=".time(),
-                                "title"=>"انرژی بار ",
-                                "subtitle"=>"طعم شکلاتی - کافیین دار",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "image" => "https://karen.kerloper.com/uploads/e1.jpg?reload=" . time(),
+                                "title" => "انرژی بار ",
+                                "id" => "289",
+                                "subtitle" => "طعم شکلاتی - کافیین دار",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
                             [
-                                "id"=>"289",
-                                "image"=>"https://karen.kerloper.com/uploads/e3.jpg?reload=".time(),
-                                "title"=>"انرژی بار ",
-                                "subtitle"=>"طعم شکلاتی - کافیین دار",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "id" => "289",
+                                "image" => "https://karen.kerloper.com/uploads/e2.jpg?reload=" . time(),
+                                "title" => "انرژی بار ",
+                                "subtitle" => "طعم شکلاتی - کافیین دار",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
                             [
-                                "id"=>"289",
-                                "image"=>"https://karen.kerloper.com/uploads/e4.jpg?reload=".time(),
-                                "title"=>"انرژی بار ",
-                                "subtitle"=>"طعم شکلاتی - کافیین دار",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "id" => "289",
+                                "image" => "https://karen.kerloper.com/uploads/e3.jpg?reload=" . time(),
+                                "title" => "انرژی بار ",
+                                "subtitle" => "طعم شکلاتی - کافیین دار",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
+                            ],
+                            [
+                                "id" => "289",
+                                "image" => "https://karen.kerloper.com/uploads/e4.jpg?reload=" . time(),
+                                "title" => "انرژی بار ",
+                                "subtitle" => "طعم شکلاتی - کافیین دار",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ],
 
                         ],
-                        "middle_banner"=>[
-                            "image"=>"https://karen.kerloper.com/uploads/creatineinim.jpg",
-                            "title"=>"Creatine",
-                            "fa_text"=>"افزایش قدرت عضلانی استقامت و کارایی بدن",
-                            "text"=>"Increase muscle , strength Power & performance",
+                        "middle_banner" => [
+                            "image" => "https://karen.kerloper.com/uploads/creatineinim.jpg",
+                            "title" => "Creatine",
+                            "fa_text" => "افزایش قدرت عضلانی استقامت و کارایی بدن",
+                            "text" => "Increase muscle , strength Power & performance",
                         ],
-                        "bottom_banner"=>[
+                        "bottom_banner" => [
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/11.jpg?reload=".time(),
-                                "title"=>" ",
-                                "subtitle"=>" ",
-                                "en_title"=>"  "
+                                "image" => "https://karen.kerloper.com/uploads/11.jpg?reload=" . time(),
+                                "title" => " ",
+                                "subtitle" => " ",
+                                "en_title" => "  "
                             ],
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/22.jpg?reload=".time(),
-                                "title"=>"افزایش وزن",
-                                "subtitle"=>"کربو مسیو",
-                                "en_title"=>" "
+                                "image" => "https://karen.kerloper.com/uploads/22.jpg?reload=" . time(),
+                                "title" => "افزایش وزن",
+                                "subtitle" => "کربو مسیو",
+                                "en_title" => " "
                             ],
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/33.jpg?reload=".time(),
-                                "title"=>" آمینو اسید ها",
-                                "subtitle"=>"آمینو وی",
-                                "en_title"=>" "
+                                "image" => "https://karen.kerloper.com/uploads/33.jpg?reload=" . time(),
+                                "title" => " آمینو اسید ها",
+                                "subtitle" => "آمینو وی",
+                                "en_title" => " "
                             ],
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/44.jpg?reload=".time(),
-                                "title"=>" ",
-                                "subtitle"=>" ",
-                                "en_title"=>"  "
+                                "image" => "https://karen.kerloper.com/uploads/44.jpg?reload=" . time(),
+                                "title" => " ",
+                                "subtitle" => " ",
+                                "en_title" => "  "
                             ],
                             [
-                                "image"=>"https://karen.kerloper.com/uploads/slider02.png",
-                                "title"=>"افزایش وزن",
-                                "subtitle"=>"مکس بی سی دبل ای مکس ماسل",
-                                "en_title"=>"MAXMUSCLE MAX BCCA"
+                                "image" => "https://karen.kerloper.com/uploads/slider02.png",
+                                "title" => "افزایش وزن",
+                                "subtitle" => "مکس بی سی دبل ای مکس ماسل",
+                                "en_title" => "MAXMUSCLE MAX BCCA"
                             ]
                         ],
                         "trend_section" => [
@@ -255,7 +258,7 @@ class ItemHomeHandler implements RequestHandlerInterface
                             "title" => "وبلاگ",
                             "more_link" => "/blog/",
                             "more_title" => "مشاهده بیشتر",
-                            "list" =>[
+                            "list" => [
                                 [
                                     "id" => 103,
                                     "slug" => "blog-tset-1",
@@ -265,13 +268,13 @@ class ItemHomeHandler implements RequestHandlerInterface
                                     "title" => "وبلاگ تست دو",
                                     "sub_title" => "",
                                     "thumbnail" => [
-                                        "src" =>"https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
                                     ],
                                     "image" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
@@ -295,13 +298,13 @@ class ItemHomeHandler implements RequestHandlerInterface
                                     "title" => "وبلاگ تست دو",
                                     "sub_title" => "",
                                     "thumbnail" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
                                     ],
                                     "image" => [
-                                        "src" =>"https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
@@ -325,13 +328,13 @@ class ItemHomeHandler implements RequestHandlerInterface
                                     "title" => "وبلاگ تست دو",
                                     "sub_title" => "",
                                     "thumbnail" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
                                     ],
                                     "image" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
@@ -355,13 +358,13 @@ class ItemHomeHandler implements RequestHandlerInterface
                                     "title" => "وبلاگ تست دو",
                                     "sub_title" => "",
                                     "thumbnail" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
                                     ],
                                     "image" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
@@ -385,13 +388,13 @@ class ItemHomeHandler implements RequestHandlerInterface
                                     "title" => "وبلاگ تست دو",
                                     "sub_title" => "",
                                     "thumbnail" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
                                     ],
                                     "image" => [
-                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
+                                        "src" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
                                         "alt" => "",
                                         "width" => "",
                                         "height" => ""
@@ -409,29 +412,29 @@ class ItemHomeHandler implements RequestHandlerInterface
                             ],
 
                         ],
-                        'category_list'=>$this->categoryService->getCategoryList(['key'=>'category']),
+                        'category_list' => $this->categoryService->getCategoryList(['key' => 'category']),
 
-                        'category_slider'=>$this->categoryService->getCategoryList(['key'=>'category'])[0]['children'],
-                        'brand_list'=>$this->brandService->getBrandList(['key'=>'brand'])['data']['list'],
+                        'category_slider' => $this->categoryService->getCategoryList(['key' => 'category'])[0]['children'],
+                        'brand_list' => $this->brandService->getBrandList(['key' => 'brand'])['data']['list'],
 
-                        "last_banner"=>[
+                        "last_banner" => [
                             // "image"=>"https://karen.kerloper.com/uploads/003.jpg",
-                            "image"=>"https://karen.kerloper.com/uploads/b2.jpg",
-                            "title"=>"لورم ایپسوم",
-                            "text"=>"لورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم",
-                            "subhead"=> "Iso whey ",
-                            "title"=> "Pure protein pure powder",
-                            "subtitle"=> "پروتئین  وی ایزوله ",
+                            "image" => "https://karen.kerloper.com/uploads/b2.jpg",
+                            "title" => "لورم ایپسوم",
+                            "text" => "لورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم",
+                            "subhead" => "Iso whey ",
+                            "title" => "Pure protein pure powder",
+                            "subtitle" => "پروتئین  وی ایزوله ",
 
                         ],
-                        "end_section"=>[
-                            "image"=>"https://karen.kerloper.com/uploads/3.jpg?reload=".time(),
-                            "title"=>"لورم ایپسوم",
-                            "subhead"=>"لورم ایپسوم",
-                            "text"=>"لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم اس تلورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم"
+                        "end_section" => [
+                            "image" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
+                            "title" => "لورم ایپسوم",
+                            "subhead" => "لورم ایپسوم",
+                            "text" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم اس تلورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم"
                         ],
-                        "brands"=>[
-                            "image"=>"https://karen.kerloper.com/uploads/brands.png",
+                        "brands" => [
+                            "image" => "https://karen.kerloper.com/uploads/brands.png",
                         ],
                     ];
                     break;
@@ -491,8 +494,110 @@ class ItemHomeHandler implements RequestHandlerInterface
                             "list" => $this->canonizeBlogList($this->itemService->getItemList(['type' => 'blog', 'limit' => 3, 'page' => 1])['data']['list']),
 
                         ],
-                        'category_list'=>$this->categoryService->getCategoryList(['key'=>'category']),
-                        'brand_list'=>$this->brandService->getBrandList(['key'=>'brand'])['data']['list']
+                        'category_list' => $this->categoryService->getCategoryList(['key' => 'category']),
+                        'brand_list' => $this->brandService->getBrandList(['key' => 'brand'])['data']['list'],
+
+
+                        "sub_slogan" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک",
+                        "middle_banner" => [
+                            "image" => "https://karen.kerloper.com/uploads/creatineinim.jpg",
+                            "title" => "Creatine",
+                            "fa_text" => "افزایش قدرت عضلانی استقامت و کارایی بدن",
+                            "text" => "Increase muscle , strength Power & performance",
+                        ],
+                        "latest_section" => [
+                            "list" => $this->productService->getItemList([
+                                'type' => 'product',
+                                // 'product_trend' => 1,
+                                'limit' => 8,
+                                'page' => 1
+                            ])['data']['list'],
+                            "type" => "product",
+                            "title" => "آخرین محصولات",
+                            "button_link" => "/products/?trendProducts=true",
+                            "more_title" => "مشاهده بیشتر",
+                            "background" => "",
+                            "abstract" => ""
+                        ],
+                        "popular_section" => [
+                            "list" => $this->productService->getItemList([
+                                'type' => 'product',
+                                'product_popular' => 1,
+                                'limit' => 8,
+                                'page' => 1
+                            ])['data']['list'],
+                            "type" => "product",
+                            "title" => "محبوب ترین ها",
+                            "button_link" => "/products/?trendProducts=true",
+                            "more_title" => "مشاهده بیشتر",
+                            "background" => "",
+                            "abstract" => ""
+                        ],
+
+                        'category_slider' => $this->categoryService->getCategoryList(['key' => 'category'])[0]['children'],
+
+                        "last_banner" => [
+                            // "image"=>"https://karen.kerloper.com/uploads/003.jpg",
+                            "image" => "https://karen.kerloper.com/uploads/b2.jpg",
+                            "title" => "لورم ایپسوم",
+                            "text" => "لورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم",
+                            "subhead" => "Iso whey ",
+                            "title" => "Pure protein pure powder",
+                            "subtitle" => "پروتئین  وی ایزوله ",
+
+                        ],
+                        "end_section" => [
+                            "image" => "https://karen.kerloper.com/uploads/3.jpg?reload=" . time(),
+                            "title" => "لورم ایپسوم",
+                            "subhead" => "لورم ایپسوم",
+                            "text" => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم اس تلورم لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم"
+                        ],
+                        "brands_slider" => [
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ],
+
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ],
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ],
+
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ]
+                        ],
+
+                        "brands_banner" => [
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ],
+
+                            [
+                                "slug" => "brand_one",
+                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                            ]
+                        ],
+                        "sells_of_section" => [
+                            "list" => $this->productService->getItemList([
+                                'type' => 'product',
+                                'product_popular' => 1,
+                                'limit' => 8,
+                                'page' => 1
+                            ])['data']['list'],
+                            "type" => "product",
+                            "title" => "محبوب ترین ها",
+                            "button_link" => "/products/?trendProducts=true",
+                            "more_title" => "مشاهده بیشتر",
+                            "background" => "",
+                            "abstract" => ""
+                        ],
                     ];
                     break;
 
@@ -510,8 +615,8 @@ class ItemHomeHandler implements RequestHandlerInterface
 
     private function canonizeBlogList(mixed $list)
     {
-        if($list){
-            foreach ($list as $key=>$item) {
+        if ($list) {
+            foreach ($list as $key => $item) {
                 $list[$key]['author'] = 'مدیر محتوا';
                 $list[$key]['description'] = $item['abstract'];
                 $list[$key]['abstract'] = "لورم ایپسوم (Lorem Ipsum) متنی است آزمایشی و بی‌معنی در صنعت چاپ و طراحی گرافیک. این متن به‌طور کامل از متن‌های کلاسیک و قدیمی لاتین گرفته شده است. از آنجا که این متن بی‌معنی است، می‌توان آن را به‌عنوان یک پاراگراف موقت در طراحی و چاپ استفاده کرد تا مشتریان نهایی نظری در مورد طراحی گرافیک یا صفحه‌آرایی داشته باشند";

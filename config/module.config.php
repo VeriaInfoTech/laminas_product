@@ -37,7 +37,13 @@ return [
             Handler\Api\Cart\CartAddHandler::class => Factory\Handler\Api\Cart\CartAddHandlerFactory::class,
             Handler\Api\Cart\CartUpdateHandler::class => Factory\Handler\Api\Cart\CartUpdateHandlerFactory::class,
             Handler\Api\Cart\CartRemoveHandler::class => Factory\Handler\Api\Cart\CartRemoveHandlerFactory::class,
-            Handler\Api\Cart\CartClearHandler::class => Factory\Handler\Api\Cart\CartClearHandlerFactory::class
+            Handler\Api\Cart\CartClearHandler::class => Factory\Handler\Api\Cart\CartClearHandlerFactory::class,
+            //start comment section
+            Handler\Api\Comment\CommentAddHandler::class => Factory\Handler\Api\Comment\CommentAddHandlerFactory::class,
+            //start favorite section
+            Handler\Api\Favorite\FavoriteAddHandler::class => Factory\Handler\Api\Favorite\FavoriteAddHandlerFactory::class,
+            Handler\Api\Favorite\FavoriteRemoveHandler::class => Factory\Handler\Api\Favorite\FavoriteRemoveHandlerFactory::class,
+            Handler\Api\Favorite\FavoriteListHandler::class => Factory\Handler\Api\Favorite\FavoriteListHandlerFactory::class,
 
         ],
     ],
@@ -332,6 +338,112 @@ return [
                                             AuthorizationMiddleware::class,
                                             Middleware\CartMiddleware::class,
                                             Handler\Api\Cart\CartClearHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'comment' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/comment',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'add',
+                                        'permission' => 'api-product-cart-add',
+                                        'validator' => 'add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Api\Comment\CommentAddHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    'favorite' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/favorite',
+                            'defaults' => [],
+                        ],
+                        'child_routes' => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/list',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'add',
+                                        'permission' => 'api-product-cart-add',
+                                        'validator' => 'add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Api\Favorite\FavoriteListHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'add',
+                                        'permission' => 'api-product-cart-add',
+                                        'validator' => 'add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Api\Favorite\FavoriteRemoveHandler::class
+                                        ),
+                                    ],
+                                ],
+                            ],
+                            'remove' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/remove',
+                                    'defaults' => [
+                                        'module' => 'product',
+                                        'section' => 'api',
+                                        'package' => 'cart',
+                                        'handler' => 'add',
+                                        'permission' => 'api-product-cart-add',
+                                        'validator' => 'add',
+                                        'controller' => PipeSpec::class,
+                                        'middleware' => new PipeSpec(
+                                            RequestPreparationMiddleware::class,
+                                            SecurityMiddleware::class,
+                                            AuthenticationMiddleware::class,
+                                            AuthorizationMiddleware::class,
+                                            Handler\Api\Favorite\FavoriteRemoveHandler::class
                                         ),
                                     ],
                                 ],
