@@ -32,11 +32,10 @@ class CartService implements ServiceInterface
     public function __construct(
         AccountService $accountService,
         UtilityService $utilityService,
-        MetaService    $metaService,
-        ItemService    $itemService,
+        MetaService $metaService,
+        ItemService $itemService,
         ProductService $productService
-    )
-    {
+    ) {
         $this->accountService = $accountService;
         $this->utilityService = $utilityService;
         $this->itemService = $itemService;
@@ -52,10 +51,10 @@ class CartService implements ServiceInterface
             $this->clearCart($account);
         }
         $params = [
-            'user_id' => $account['id'],
-            'type' => 'cart',
-            'status' => 1,
-            'slug' => 'cart-' . $account['id'],
+            'user_id'     => $account['id'],
+            'type'        => 'cart',
+            'status'      => 1,
+            'slug'        => 'cart-' . $account['id'],
             'time_create' => time()
         ];
         $information = array_merge($params, $requestBody);
@@ -87,11 +86,11 @@ class CartService implements ServiceInterface
                     $inventory = (int)$this->findMetaByKey('inventory', $product)['meta_value'];
                     $price = (int)$this->findMetaByKey('price', $product)['meta_value'];
                     $items[] = [
-                        'id' => $cartItem['id'],
-                        'count' => $cartItem['count'],
-                        'price_unit' => $price,
-                        'price' => $price * $inventory,
-                        'status' => $cartItem['count'] > $inventory ? 'out_of_stock' : 'in_stock',
+                        'id'          => $cartItem['id'],
+                        'count'       => $cartItem['count'],
+                        'price_unit'  => $price,
+                        'price'       => $price * $inventory,
+                        'status'      => $cartItem['count'] > $inventory ? 'out_of_stock' : 'in_stock',
                         'information' => $product
                     ];
 
@@ -100,13 +99,13 @@ class CartService implements ServiceInterface
         }
         unset($cartData['cart']);
         $cartData['cart'] = [
-            'total_count' => count($items),
-            'total_item_count' => array_sum(array_column($items, 'count')),
-            'available_count' => count(array_filter($items, fn($item) => $item['status'] === 'in_stock')),
+            'total_count'          => count($items),
+            'total_item_count'     => array_sum(array_column($items, 'count')),
+            'available_count'      => count(array_filter($items, fn($item) => $item['status'] === 'in_stock')),
             'available_item_count' => array_sum(array_column(array_filter($items, fn($item) => $item['status'] === 'in_stock'), 'count')),
-            'total_price' => array_sum(array_column($items, 'price')),
-            'payable_price' => array_sum(array_column(array_filter($items, fn($item) => $item['status'] === 'in_stock'), 'price')),
-            'items' => $items,
+            'total_price'          => array_sum(array_column($items, 'price')),
+            'payable_price'        => array_sum(array_column(array_filter($items, fn($item) => $item['status'] === 'in_stock'), 'price')),
+            'items'                => $items,
         ];
         return $cartData;
     }
@@ -134,5 +133,70 @@ class CartService implements ServiceInterface
     {
         $this->itemService->destroyItem(['slug' => 'cart-' . $account['id']]);
     }
+
+    public function addFavorite(object|array|null $request, mixed $account): array
+    {
+        $favorite = $this->getFavorite($account);
+        if (empty($favorite)) {
+            $params = [
+                'user_id'     => $account['id'],
+                'type'        => 'favorite',
+                'status'      => 1,
+                'slug'        => 'favorite-' . $account['id'],
+                'time_create' => time()
+            ];
+            $information = array_merge($params, $request);
+            $information[$request['item_type'] ?? 'unknown'][] = $request['item_id'] ?? 0;
+            $params['information'] = json_encode($information);
+            $this->itemService->addItem($params, $account);
+        }else{
+             $favorite[$request['item_type'] ?? 'unknown'][]=$request['item_id'];
+            $favorite[$request['item_type'] ?? 'unknown'] = array_values(array_unique( $favorite[$request['item_type'] ?? 'unknown']));
+            $params = [
+                'user_id'     => $account['id'],
+                'type'        => 'favorite',
+                'status'      => 1,
+                'slug'        => 'favorite-' . $account['id'],
+                'time_update' => time()
+            ];
+            $information = array_merge($params, $favorite);
+            $params['information'] = json_encode($information);
+            $this->itemService->editItem($params, $account);
+
+        }
+
+        return $this->getFavorite($account);
+    }
+
+    public function getFavorite($account): array
+    {
+        return $this->itemService->getItem('favorite-' . $account['id'], 'slug', ['user_id' => $account['id']]);
+    }
+    public function removeFavorite(object|array|null $request, mixed $account): array
+    {
+        $favorite = $this->getFavorite($account);
+        if (empty($favorite)) {
+            return [];
+        }else{
+            $favorite[$request['item_type'] ?? 'unknown'] = array_filter( $favorite[$request['item_type'] ?? 'unknown'], function($item) use ($request) {
+                return $item !== $request['item_id'];
+            });
+            $favorite[$request['item_type'] ?? 'unknown'] = array_values(array_unique( $favorite[$request['item_type'] ?? 'unknown']));
+            $params = [
+                'user_id'     => $account['id'],
+                'type'        => 'favorite',
+                'status'      => 1,
+                'slug'        => 'favorite-' . $account['id'],
+                'time_update' => time()
+            ];
+            $information = array_merge($params, $favorite);
+            $params['information'] = json_encode($information);
+            $this->itemService->editItem($params, $account);
+
+        }
+
+        return $this->getFavorite($account);
+    }
+
 
 }

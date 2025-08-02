@@ -36,13 +36,12 @@ class FavoriteAddHandler  implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $account = $request->getAttribute("account");
-        $params = [
-            'cart' => $request->getAttribute("cart"),
-        ]; 
+        $request = $request->getParsedBody();
+        $result = $this->cartService->addFavorite($request, $account);
         return new JsonResponse(
             [
                 'result' => true,
-                'data' => \stdClass::class,
+                'data' => $result,
                 'error' => [],
             ],
         );

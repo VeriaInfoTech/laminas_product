@@ -44,7 +44,6 @@ return [
             Handler\Api\Favorite\FavoriteAddHandler::class => Factory\Handler\Api\Favorite\FavoriteAddHandlerFactory::class,
             Handler\Api\Favorite\FavoriteRemoveHandler::class => Factory\Handler\Api\Favorite\FavoriteRemoveHandlerFactory::class,
             Handler\Api\Favorite\FavoriteListHandler::class => Factory\Handler\Api\Favorite\FavoriteListHandlerFactory::class,
-
         ],
     ],
 
@@ -394,8 +393,7 @@ return [
                                         'permission' => 'api-product-cart-add',
                                         'validator' => 'add',
                                         'controller' => PipeSpec::class,
-                                        'middleware' => new PipeSpec(
-                                            RequestPreparationMiddleware::class,
+                                        'middleware' => new PipeSpec( 
                                             SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
@@ -421,7 +419,7 @@ return [
                                             SecurityMiddleware::class,
                                             AuthenticationMiddleware::class,
                                             AuthorizationMiddleware::class,
-                                            Handler\Api\Favorite\FavoriteRemoveHandler::class
+                                            Handler\Api\Favorite\FavoriteAddHandler::class
                                         ),
                                     ],
                                 ],
