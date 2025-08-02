@@ -144,8 +144,8 @@ class ProductService implements ServiceInterface
             'category'       => '',
             'brand'          => '',
             'title'          => $item['title'] ?? '',
-            'price'          => 120000,
-            'old_price'      => 249.99,
+            'price'          => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'price'])[0]['meta_value']??0,
+            'old_price'      => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'before-special-price'])[0]['meta_value']??0,
             'rating'         => rand(0, 5),
             'quantity'       => 50,
             'orderQuantity'  => 0,
@@ -170,16 +170,16 @@ class ProductService implements ServiceInterface
         $product['extra'] = [];
         $product['meta'] = $item['meta'];
         $product['extra']['category'] = $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'category']);
-        if ($product['extra']['category']) {
-            $product['category'] = implode(
-                ",",
-                array_map(function ($item) {
-                    return $item["meta_information"]["title"];
-                },
-                    $product['extra']['category']
-                )
-            );
-        }
+//        if ($product['extra']['category']) {
+//            $product['category'] = implode(
+//                ",",
+//                array_map(function ($item) {
+//                    return $item["meta_information"]["title"];
+//                },
+//                    $product['extra']['category']
+//                )
+//            );
+//        }
 
 
         $meta = $product['meta'];
