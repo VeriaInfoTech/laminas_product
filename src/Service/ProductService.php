@@ -247,42 +247,14 @@ class ProductService implements ServiceInterface
                 $filter['brand_list'] = [$product['extra']['brand']['meta_value']];
             }
             $product['related_products'] = $this->getItemList($filter)['data']['list'];
-            $product['comments'] = $this->itemService->getItemList(['type' => 'comment', 'parent_id' => $product['id']])['data']['list'];
+            $comments = $this->itemService->getItemList(['type' => 'comment', 'parent_id' => $product['id']])['data']['list'];
             $product['comments'] = array_map(function ($item) {
                 return [
-                    "user"      => $item['user']['name'],
+                    "user"      => $item['user']['name']??'*',
                     "text"      => $item['comment'],
-                    "data_time" => $item['time']
+                    "data_time" => date('Y-m-d H:i:s', $item['time_create'])
                 ];
-            }, $product['comments']);
-//            $product['comments'] = [
-//                [
-//                    "user"      => "سامان شاخص",
-//                    "data_time" => "2025-07-21 18:45",
-//                    "text"      => "این محصول واقعا عالیه، خیلی راضیم."
-//                ],
-//                [
-//                    "user"      => "نرگس احمدی",
-//                    "data_time" => "2025-07-20 10:12",
-//                    "text"      => "ارسال سریع بود و بسته‌بندی مناسب داشت."
-//                ],
-//                [
-//                    "user"      => "محسن رضایی",
-//                    "data_time" => "2025-07-19 21:30",
-//                    "text"      => "کیفیتش خوبه ولی قیمتش یه مقدار بالاست."
-//                ],
-//                [
-//                    "user"      => "الهه کریمی",
-//                    "data_time" => "2025-07-18 14:03",
-//                    "text"      => "پیشنهاد می‌کنم قبل از خرید اندازه‌اش رو چک کنید."
-//                ],
-//                [
-//                    "user"      => "علی عباسی",
-//                    "data_time" => "2025-07-17 09:57",
-//                    "text"      => "من برای بار دوم این محصول رو خریدم، عالیه."
-//                ]
-//            ];
-
+            }, $comments);
         }
 
 
