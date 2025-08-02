@@ -38,8 +38,7 @@ class FavoriteAddHandler  implements RequestHandlerInterface
         $account = $request->getAttribute("account");
         $params = [
             'cart' => $request->getAttribute("cart"),
-        ];
-        $result = $this->cartService->addCart($params, $account);
+        ]; 
         return new JsonResponse(
             [
                 'result' => true,

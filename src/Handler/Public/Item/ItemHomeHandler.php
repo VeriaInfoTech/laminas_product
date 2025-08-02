@@ -555,21 +555,21 @@ class ItemHomeHandler implements RequestHandlerInterface
                         "brands_slider" => [
                             [
                                 "slug" => "brand_one",
-                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                                "image_url" => "https://karen.kerloper.com/uploads/brands.png",
                             ],
 
                             [
                                 "slug" => "brand_one",
-                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                                "image_url" => "https://karen.kerloper.com/uploads/brands.png",
                             ],
                             [
                                 "slug" => "brand_one",
-                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                                "image_url" => "https://karen.kerloper.com/uploads/brands.png",
                             ],
 
                             [
                                 "slug" => "brand_one",
-                                "image" => "https://karen.kerloper.com/uploads/brands.png",
+                                "image_url" => "https://karen.kerloper.com/uploads/brands.png",
                             ]
                         ],
 

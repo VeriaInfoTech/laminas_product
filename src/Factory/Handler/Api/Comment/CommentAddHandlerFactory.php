@@ -2,10 +2,10 @@
 
 namespace Product\Factory\Handler\Api\Comment;
 
-use Product\Handler\Api\Comment\CommentAddHandler ;
-use Product\Service\CartService;
+use Product\Handler\Api\Comment\CommentAddHandler ; 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Product\Service\CommentService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -27,7 +27,7 @@ class CommentAddHandlerFactory implements FactoryInterface
         return new CommentAddHandler (
             $container->get(ResponseFactoryInterface::class),
             $container->get(StreamFactoryInterface::class),
-            $container->get(CartService::class)
+            $container->get(CommentService::class)
         );
     }
 }

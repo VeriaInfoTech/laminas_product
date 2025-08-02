@@ -6,6 +6,7 @@ use Content\Service\ItemService;
 use Content\Service\MetaService;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Product\Service\CommentService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Product\Service\ProductService;

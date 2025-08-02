@@ -2,7 +2,7 @@
 
 namespace Product\Handler\Api\Comment;
 
-use Product\Service\CartService;
+use Product\Service\CommentService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -18,32 +18,30 @@ class CommentAddHandler  implements RequestHandlerInterface
     /** @var StreamFactoryInterface */
     protected StreamFactoryInterface $streamFactory;
 
-    /** @var CartService */
-    protected CartService $cartService;
+    /** @var CommentService */
+    protected CommentService $commentService;
 
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface   $streamFactory,
-        CartService              $cartService
+        CommentService              $commentService
     )
     {
         $this->responseFactory = $responseFactory;
         $this->streamFactory = $streamFactory;
-        $this->cartService = $cartService;
+        $this->commentService = $commentService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $account = $request->getAttribute("account");
-        $params = [
-            'cart' => $request->getAttribute("cart"),
-        ];
-        $result = $this->cartService->addCart($params, $account);
+        $request = $request->getParsedBody();
+        $result = $this->commentService->addComment($request,$account);
         return new JsonResponse(
             [
                 'result' => true,
-                'data' => \stdClass::class,
+                'data' => $result,
                 'error' => [],
             ],
         );
