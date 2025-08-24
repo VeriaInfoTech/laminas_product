@@ -144,8 +144,8 @@ class ProductService implements ServiceInterface
             'category'       => '',
             'brand'          => '',
             'title'          => $item['title'] ?? '',
-            'price'          => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'price'])[0]['meta_value']??0,
-            'old_price'      => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'before-special-price'])[0]['meta_value']??0,
+            'price'          => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'price'])[0]['meta_value'] ?? 0,
+            'old_price'      => $this->filterObjects(['list' => $item['meta'] ?? [], 'value' => 'before-special-price'])[0]['meta_value'] ?? 0,
             'rating'         => rand(0, 5),
             'quantity'       => 50,
             'orderQuantity'  => 0,
@@ -201,7 +201,7 @@ class ProductService implements ServiceInterface
                 if (!isset($organizedMeta['repeated'][$key])) {
                     $organizedMeta['repeated'][$key] = [];
                 }
-                $organizedMeta['repeated'][$key][] = $value;
+                $organizedMeta['repeated'][$key] = $value;
             }
         }
 
@@ -218,6 +218,12 @@ class ProductService implements ServiceInterface
             $product['price'] = (int)$product['extra']['price']['meta_value'] ?? 150000;
         }
         $product['middle_banner'] = "https://karen.kerloper.com/uploads/product.jpg";
+        $metaData = $this->metaService->getMetaKeyList(['type' => 'product']);
+        if (isset($metaData['data']['list'])) {
+            foreach ($metaData['data']['list'] as $item) {
+                $product['meta_key_value'][$item['key']] = $item['value'] ?? ' ';
+            }
+        }
         return $product;
     }
 
@@ -250,7 +256,7 @@ class ProductService implements ServiceInterface
             $comments = $this->itemService->getItemList(['type' => 'comment', 'parent_id' => $product['id']])['data']['list'];
             $product['comments'] = array_map(function ($item) {
                 return [
-                    "user"      => $item['user']['name']??'*',
+                    "user"      => $item['user']['name'] ?? '*',
                     "text"      => $item['comment'],
                     "data_time" => date('Y-m-d H:i:s', $item['time_create'])
                 ];
